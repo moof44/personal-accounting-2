@@ -15,6 +15,7 @@
     "@angular/common": "^18.1.0",
     "@angular/compiler": "^18.1.0",
     "@angular/core": "^18.1.0",
+    "@angular/fire": "^18.0.1",
     "@angular/forms": "^18.1.0",
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
@@ -41,5 +42,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.2"
+  },
+  "overrides" : {
+    "undici": "6.19.2",
+    "undici-types": "6.19.2"
   }
 }
