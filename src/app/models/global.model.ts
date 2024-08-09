@@ -1,4 +1,5 @@
 export interface NavigationMenu{
-    name: string;
+    label: string;
     link: string;
 }
+

@@ -21,8 +21,8 @@
                 [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"
     >
         <mat-nav-list>
-            @for (nav of fillerNav; track nav) {
-                <a mat-list-item routerLink=".">{{nav}}</a>
+            @for (nav of fillerNav2; track nav) {
+                <a mat-list-item routerLink="{{nav.link}}">{{nav.label}}</a>
             }
         </mat-nav-list>
     </mat-sidenav>
