@@ -2,3 +2,23 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+table{
+    thead {
+        .left-text{
+            text-align: left;
+        }
+        
+        .right-text{
+            text-align: right;
+        }
+        
+        .center-text{
+            text-align: center;
+        }
+        
+        .justify-text{
+            text-align: justify;
+        }
+    }
+} 
