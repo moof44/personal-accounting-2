@@ -1,0 +1,33 @@
+<mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon"
+        (click)="snav.toggle()"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Personal Accounting</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+      <mat-icon>share</mat-icon>
+    </button>
+</mat-toolbar> 
+<mat-sidenav-container 
+    class="example-sidenav-container"
+    [style.marginTop.px]="mobileQuery.matches ? 16 : 0"
+>
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+                [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"
+    >
+        <mat-nav-list>
+            @for (nav of fillerNav; track nav) {
+                <a mat-list-item routerLink=".">{{nav}}</a>
+            }
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="content">
+        <ng-content></ng-content>
+    </mat-sidenav-content>
+</mat-sidenav-container>
