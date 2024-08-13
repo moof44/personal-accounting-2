@@ -65,7 +65,7 @@ export const IncomeStore = signalStore(
                                 next: (incomes)=>{
                                     patchState(store, setAllEntities(incomes as any[]))
                                 },
-                                error: ()=>{},
+                                error: ()=>console.error,
                                 complete: ()=>{},
                             })
                         )
