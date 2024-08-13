@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, type OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import {MatTableModule} from '@angular/material/table';
+import {MatCardModule} from '@angular/material/card';
 
 @Component({
   selector: 'app-home',
@@ -9,6 +10,7 @@ import {MatTableModule} from '@angular/material/table';
   imports: [
     CommonModule,
     MatTableModule,
+    MatCardModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

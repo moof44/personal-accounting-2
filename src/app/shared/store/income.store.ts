@@ -18,9 +18,60 @@
  *      3.9 conside the ff: tapResponse
  */
 
-export interface Income{ 
-    date: Date | string;
-    incomeSource: string;
-    amount: number;
-    remarks: string;
+import { inject, Injectable } from '@angular/core';
+import { collection, collectionData, CollectionReference, Firestore } from '@angular/fire/firestore';
+import { Income, IncomeSettings } from '@app/models/global.model';
+import { patchState, signalStore, signalStoreFeature, watchState, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { addEntity, setAllEntities, updateAllEntities, withEntities } from '@ngrx/signals/entities';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { exhaustMap, map, Observable, pipe, switchMap, tap } from 'rxjs';
+import { tapResponse } from '@ngrx/operators';
+import { IncomeService } from '@app/services/income.service';
+
+let _incomeCollection!: CollectionReference;
+
+function withIncomeSettings(){
+    return signalStoreFeature(
+        withState<IncomeSettings>({title: 'Income'})
+    )
 }
+
+// const loadIncome = rxMethod<void>(
+//     pipe(
+//         tap(),
+//         exhaustMap(()=>{
+
+//         }) 
+//     )
+// )
+
+export const IncomeStore = signalStore(
+    withEntities<Income>(),
+    withIncomeSettings(),
+    withHooks({
+        onInit(store){
+            watchState(store, (state)=> console.log)
+        },
+        onDestroy(store){}
+    }),
+    withMethods((store, incomeService = inject(IncomeService))=>({
+        loadIncome: rxMethod<any>(
+            pipe(
+                switchMap(()=>{
+                    return incomeService.incomeCollectionData$
+                        .pipe(
+                            map((incomes:any[])=>incomes.map(v=>({...v, date: v.date.toDate()}))),
+                            tapResponse({
+                                next: (incomes)=>{
+                                    patchState(store, setAllEntities(incomes as any[]))
+                                },
+                                error: ()=>{},
+                                complete: ()=>{},
+                            })
+                        )
+                })
+            )
+        )
+    })
+    )
+)

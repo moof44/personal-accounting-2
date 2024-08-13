@@ -3,3 +3,14 @@ export interface NavigationMenu{
     link: string;
 }
 
+
+export interface Income{ 
+    date: Date | string;
+    incomeSource: string;
+    amount: number;
+    remarks: string;
+}
+
+export interface IncomeSettings{
+    title: string
+}

@@ -52,6 +52,7 @@ mat-sidenav-container{
         width:100%;
         display:flex;
         justify-content: center;
+        padding: 1rem;
     
         &__page{
             min-width: 25.5rem;
@@ -59,6 +60,13 @@ mat-sidenav-container{
             display: flex;
             padding: 0.5rem;
             width: -webkit-fill-available;
+
+            mat-card{
+                width: 100%;
+                &-header{
+                    padding-bottom: .5rem;
+                }
+            }
         }
     }
 }
