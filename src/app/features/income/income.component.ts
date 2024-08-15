@@ -47,7 +47,7 @@ export class IncomeComponent implements OnInit {
   ngOnInit(): void {
     const currentUrl = this.route.snapshot?.url[0]?.path;
     console.log('currentUrl', this.route.snapshot?.url);
-    if(currentUrl){
+    if(currentUrl === '/income/add'){
       this.currentPage.set('add');
     }else{
       this.currentPage.set('list');

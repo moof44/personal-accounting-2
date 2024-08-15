@@ -25,7 +25,7 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    //this.store.loadIncome('');
+    this.store.loadIncome('');
     
   }
 }
