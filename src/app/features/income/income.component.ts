@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, inject, type OnInit } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
-import { IncomeStore } from '@app/shared/store/income.store';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, signal, type OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { IncomeStore } from '@app/shared/store/income.store';
+import { AddIncomeComponent } from './pages/add-income/add-income.component';
 import { ListIncomeComponent } from './pages/list-income/list-income.component';
+import { provideNativeDateAdapter } from '@angular/material/core';
+
 @Component({
   selector: 'feature-income',
   standalone: true,
@@ -15,9 +18,12 @@ import { ListIncomeComponent } from './pages/list-income/list-income.component';
     MatCardModule,
     MatButtonModule,
     ListIncomeComponent,
+    AddIncomeComponent,
+    RouterOutlet,
+    RouterModule,
   ],
   providers: [
-    //IncomeStore,
+    provideNativeDateAdapter()
   ],
   templateUrl: './income.component.html',
   styleUrl: './income.component.scss',
@@ -27,16 +33,39 @@ export class IncomeComponent implements OnInit {
   @HostBinding('class.content__page') pageClass = true;
 
   // displayedColumns: string[] = ['date', 'incomeSource', 'amount', 'remarks'];
-
   readonly store = inject(IncomeStore);
   title = 'Income';
+  //currentRoute = '';
+  currentPage = signal<'add'|'update'|'list'>('list');
 
-  constructor(private _firestore: Firestore){
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ){
   }
 
   ngOnInit(): void {
-    //this.store.loadIncome('');
-    this.store.entities
+    const currentUrl = this.route.snapshot?.url[0]?.path;
+    console.log('currentUrl', this.route.snapshot?.url);
+    if(currentUrl){
+      this.currentPage.set('add');
+    }else{
+      this.currentPage.set('list');
+    }
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const currentRoute = event.urlAfterRedirects;
+        const currentPage = this.getCurrentPage(currentRoute);
+        this.currentPage.set(currentPage);
+      }
+    });
+  }
+
+  getCurrentPage(page:string): 'add'|'update'|'list' {
+    if (page === '/income/add') return 'add';
+    if (page.startsWith('/income/update/')) return 'update';
+    return 'list';
   }
 
 }

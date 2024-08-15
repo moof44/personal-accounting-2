@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, input, type OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, input, signal, type OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { Income } from '@app/models/global.model';
+import { IncomeStore } from '@app/shared/store/income.store';
 
 @Component({
   selector: 'page-list-income',
@@ -19,11 +20,13 @@ import { Income } from '@app/models/global.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListIncomeComponent implements OnInit {
-  // @HostBinding('class.content__page') pageClass = true;
+  readonly store = inject(IncomeStore);
 
   displayedColumns: string[] = ['date', 'incomeSource', 'amount', 'remarks'];
-  dataSource = input.required<Income[]>()
+  dataSource = this.store.entities; // dataSource = input.required<Income[]>() // in case this will be a separate component
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    //this.dataSource.set(this.store.entities());
+  }
 
 }
