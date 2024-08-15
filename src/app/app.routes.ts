@@ -26,20 +26,21 @@ export const routes: Routes = [
           if (
             url.length >= 1 &&
             (url[0].path === 'add' ||
-              (url[0].path.startsWith('update/') &&
-                /^\d+$/.test(url[0].path.slice(7))))
+              (url[0].path.startsWith('update') &&
+                url[1]?.path)) // Check if there's any text after 'update/'
           ) {
+            const posParams = url[1]?.path? { id: new UrlSegment(url[1].path, {}) }: { id: new UrlSegment('', {}) };
             return {
               consumed: url,
-              posParams: { id: new UrlSegment(url[0].path.slice(7), {}) },
+              posParams,
             };
           }
           return null;
         },
         loadComponent: () =>
           import(
-            './features/income/pages/add-income/add-income.component'
-          ).then((m) => m.AddIncomeComponent),
+            './features/income/pages/add-update-income/add-update-income.component'
+          ).then((m) => m.AddUpdateIncomeComponent),
       },
     ],
   },

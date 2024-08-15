@@ -24,7 +24,7 @@ import { Income, IncomeSettings } from '@app/models/global.model';
 import { patchState, signalStore, signalStoreFeature, watchState, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { addEntity, setAllEntities, updateAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, map, Observable, pipe, switchMap, tap } from 'rxjs';
+import { exhaustMap, map, Observable, pipe, switchMap, of, from, take} from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { IncomeService } from '@app/services/income.service';
 
@@ -71,7 +71,16 @@ export const IncomeStore = signalStore(
                         )
                 })
             )
-        )
+        ),
+        addIncome: (data:Partial<Income>)=>{
+            return from(incomeService.save(data)).pipe(take(1))
+        },
+        updateIncome: (id:string, data:Partial<Income>)=>{
+            return from(incomeService.update(id, data)).pipe(take(1))
+        },
+        deleteIncome: (id:string)=>{
+            return from(incomeService.delete(id)).pipe(take(1))
+        },
     })
     )
 )

@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject, input, signal,
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Income } from '@app/models/global.model';
 import { IncomeStore } from '@app/shared/store/income.store';
 
@@ -21,12 +22,18 @@ import { IncomeStore } from '@app/shared/store/income.store';
 })
 export class ListIncomeComponent implements OnInit {
   readonly store = inject(IncomeStore);
+  private _router = inject(Router);
+
 
   displayedColumns: string[] = ['date', 'incomeSource', 'amount', 'remarks'];
   dataSource = this.store.entities; // dataSource = input.required<Income[]>() // in case this will be a separate component
 
   ngOnInit(): void {
     //this.dataSource.set(this.store.entities());
+  }
+
+  onRowClick(id: number) {
+    this._router.navigate(['/income/update', id]);
   }
 
 }

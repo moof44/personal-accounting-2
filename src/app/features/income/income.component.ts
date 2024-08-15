@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, inject, signal, type OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, Input, signal, type OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { IncomeStore } from '@app/shared/store/income.store';
-import { AddIncomeComponent } from './pages/add-income/add-income.component';
+import { AddUpdateIncomeComponent } from './pages/add-update-income/add-update-income.component';
 import { ListIncomeComponent } from './pages/list-income/list-income.component';
-import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'feature-income',
@@ -18,7 +18,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatCardModule,
     MatButtonModule,
     ListIncomeComponent,
-    AddIncomeComponent,
+    AddUpdateIncomeComponent,
     RouterOutlet,
     RouterModule,
   ],

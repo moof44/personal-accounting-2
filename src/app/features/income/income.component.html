@@ -15,6 +15,14 @@
         <!-- <page-list-income [dataSource]="store.entities()"></page-list-income> -->
          <router-outlet></router-outlet>
     </mat-card-content>
+    <mat-card-actions class="income-action">
+        @if (currentPage() === 'list') {
+            <ng-container *ngTemplateOutlet="addBtn"></ng-container>
+        }
+        @else {
+            <ng-container *ngTemplateOutlet="backBtn"></ng-container>
+        }
+    </mat-card-actions>
 </mat-card>
 
 <!-- Templates -->
