@@ -28,3 +28,7 @@ It was observed that Angular suggest the following features:
 
 1. Firebase high cost of read and write;
 Solution: Request data read in a global so it won't need to be refetch everytime
+
+## NOTE
+If this is being viewed for code review for applications, this repository is just a remake from the previous: https://github.com/moof44/personal-accounting 
+The difference is the use of SSR and PWA altogether and the application to use signal and storeSignal.
