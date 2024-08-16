@@ -13,8 +13,11 @@ This project has the following GOAL:
 2. To create a user interface compatible with mobile
 3. For actual personal usage
 
+## Research and Development
 
-## Features
+It was observed that Angular suggest the following features:
+
+### Features
 
 Installed with Angular-SSR
 Installed with Angular-PWA / Service Worker
