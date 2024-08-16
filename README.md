@@ -19,5 +19,5 @@ It was observed that Angular suggest the following features:
 
 ### Features
 
-Installed with Angular-SSR
-Installed with Angular-PWA / Service Worker
+1. Installed with Angular-SSR
+2. Installed with Angular-PWA / Service Worker
