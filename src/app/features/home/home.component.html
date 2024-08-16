@@ -1,0 +1,34 @@
+<mat-card appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Summary</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <ng-container [ngTemplateOutlet]="table"></ng-container>
+    </mat-card-content>
+</mat-card>
+
+
+<ng-template #table>
+    <table 
+      mat-table [dataSource]="(dataSource$ | async)!" class="mat-elevation-z8"
+      matSort="id"
+    >
+        <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+    
+        <!-- Position Column -->
+        <ng-container matColumnDef="item">
+            <th mat-header-cell *matHeaderCellDef class="center-text"> Item </th>
+            <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+        </ng-container>
+    
+        <!-- Name Column -->
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef class="center-text"> Total </th>
+            <td mat-cell *matCellDef="let element"> {{element.total | number:'.2-2'}} </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</ng-template>
