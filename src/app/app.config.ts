@@ -47,6 +47,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideStore(),
     provideEffects(),
-    provideRouterStore(),
+    provideRouterStore(), provideAnimationsAsync(),
   ],
 };

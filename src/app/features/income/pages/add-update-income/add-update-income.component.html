@@ -31,10 +31,13 @@
         <mat-label>Remarks</mat-label>
         <textarea matInput formControlName="remarks"></textarea>
       </mat-form-field>
-      <button mat-button color="red" type="button" (click)="deleteIncome()">Delete</button>
+
+      <div class="income-input-form__actions">
+        <button mat-button color="red" type="button" (click)="deleteIncome()" color="warn">Delete</button>
+      </div>
   
       <div class="income-input-form__actions">
-          <button mat-button color="secondary" type="button"(click)="goBack()">Cancel</button>
+          <button mat-button type="button"(click)="goBack()">Cancel</button>
           <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup.valid">Submit</button>
       </div>
     </div>
