@@ -1,0 +1,68 @@
+// /* d:\Programming\personal-accounting-2\src\app\shared\components\shortcut-menu\shortcut-menu.component.scss */
+
+// .shortcut-menu-container {
+//     position: fixed;
+//     bottom: 20px;
+//     right: 20px;
+//     z-index: 1000; /* Ensure it's above other elements */
+  
+//     .shortcut-button {
+//       background-color: #fff;
+//       border-radius: 50%;
+//       padding: 10px;
+//       cursor: pointer;
+//       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  
+//       &:hover {
+//         background-color: #eee;
+//       }
+//     }
+  
+//     .shortcut-menu {
+//       position: absolute;
+//       bottom: 100%; /* Position below the button */
+//       right: 0;
+//       background-color: #fff;
+//       border-radius: 5px;
+//       padding: 10px;
+//       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+//       display: none; /* Hidden by default */
+//       z-index: 1001; /* Ensure it's above the button */
+  
+//       &.show {
+//         display: block;
+//       }
+  
+//       .menu-item {
+//         padding: 5px 10px;
+//         cursor: pointer;
+  
+//         &:hover {
+//           background-color: #eee;
+//         }
+//       }
+//     }
+//   }
+  
+
+  .shortcut-menu-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Ensure it's above other elements */
+    width: 1px;
+    padding: 1px;
+    margin: 1px;
+    min-width: 40px;
+
+    mat-icon{
+        width: 24px;
+        left: 8px;
+        top: 1px;
+    }
+  }
+  
+  .mat-menu-panel {
+    /* Customize the menu panel styles here */
+  }
+  

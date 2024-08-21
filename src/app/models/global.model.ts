@@ -14,4 +14,8 @@ export interface Income{
 
 export interface IncomeSettings{
     title: string
+    filter: {
+        query: string,
+        order: 'asc' | 'desc'
+    }
 }

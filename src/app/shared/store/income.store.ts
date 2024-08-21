@@ -18,22 +18,32 @@
  *      3.9 conside the ff: tapResponse
  */
 
-import { inject, Injectable } from '@angular/core';
-import { collection, collectionData, CollectionReference, Firestore } from '@angular/fire/firestore';
+import { computed, inject } from '@angular/core';
+import { CollectionReference } from '@angular/fire/firestore';
 import { Income, IncomeSettings } from '@app/models/global.model';
-import { patchState, signalStore, signalStoreFeature, watchState, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
-import { addEntity, setAllEntities, updateAllEntities, withEntities } from '@ngrx/signals/entities';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { exhaustMap, map, Observable, pipe, switchMap, of, from, take} from 'rxjs';
-import { tapResponse } from '@ngrx/operators';
 import { IncomeService } from '@app/services/income.service';
+import { tapResponse } from '@ngrx/operators';
+import {
+  patchState,
+  signalStore,
+  signalStoreFeature,
+  watchState,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
+import { setAllEntities, withEntities } from '@ngrx/signals/entities';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { from, map, pipe, switchMap, take } from 'rxjs';
 
-let _incomeCollection!: CollectionReference;
-
-function withIncomeSettings(){
-    return signalStoreFeature(
-        withState<IncomeSettings>({title: 'Income'})
-    )
+function withIncomeSettings() {
+  return signalStoreFeature(
+    withState<IncomeSettings>({
+      title: 'Income',
+      filter: { query: '', order: 'asc' },
+    })
+  );
 }
 
 // const loadIncome = rxMethod<void>(
@@ -41,46 +51,56 @@ function withIncomeSettings(){
 //         tap(),
 //         exhaustMap(()=>{
 
-//         }) 
+//         })
 //     )
 // )
 
 export const IncomeStore = signalStore(
-    withEntities<Income>(),
-    withIncomeSettings(),
-    withHooks({
-        onInit(store){
-            watchState(store, (state)=> console.log)
-        },
-        onDestroy(store){}
-    }),
-    withMethods((store, incomeService = inject(IncomeService))=>({
-        loadIncome: rxMethod<any>(
-            pipe(
-                switchMap(()=>{
-                    return incomeService.incomeCollectionData$
-                        .pipe(
-                            map((incomes:any[])=>incomes.map(v=>({...v, date: v.date.toDate()}))),
-                            tapResponse({
-                                next: (incomes)=>{
-                                    patchState(store, setAllEntities(incomes as any[]))
-                                },
-                                error: ()=>console.error,
-                                complete: ()=>{},
-                            })
-                        )
-                })
-            )
-        ),
-        addIncome: (data:Partial<Income>)=>{
-            return from(incomeService.save(data)).pipe(take(1))
-        },
-        updateIncome: (id:string, data:Partial<Income>)=>{
-            return from(incomeService.update(id, data)).pipe(take(1))
-        },
-        deleteIncome: (id:string)=>{
-            return from(incomeService.delete(id)).pipe(take(1))
-        },
-    })
-    )
-)
+  withEntities<Income>(),
+  withIncomeSettings(),
+  withHooks({
+    onInit(store) {
+      watchState(store, (state) => console.log);
+    },
+    onDestroy(store) {},
+  }),
+  withComputed(({ entities, filter }) => ({
+    count: computed(() => entities().length),
+    filteredEntities: computed(() => entities().filter(v=>{
+        const search = v.incomeSource + v.remarks;
+        return search.toLowerCase().includes(filter.query().toLowerCase())
+    })),
+  })),
+  withMethods((store, incomeService = inject(IncomeService)) => ({
+    loadIncome: rxMethod<any>(
+      pipe(
+        switchMap(() => {
+          return incomeService.incomeCollectionData$.pipe(
+            map((incomes: any[]) =>
+              incomes.map((v) => ({ ...v, date: v.date.toDate() }))
+            ),
+            tapResponse({
+              next: (incomes) => {
+                patchState(store, setAllEntities(incomes as any[]));
+              },
+              error: () => console.error,
+              complete: () => {},
+            })
+          );
+        })
+      )
+    ),
+    addIncome: (data: Partial<Income>) => {
+      return from(incomeService.save(data)).pipe(take(1));
+    },
+    updateIncome: (id: string, data: Partial<Income>) => {
+      return from(incomeService.update(id, data)).pipe(take(1));
+    },
+    deleteIncome: (id: string) => {
+      return from(incomeService.delete(id)).pipe(take(1));
+    },
+    setFilter: (query:string, order: 'asc'| 'desc')=>{
+        patchState(store, {filter: {query, order}})
+    }
+  }))
+);

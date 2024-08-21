@@ -1,0 +1,10 @@
+.income-list-search{
+    width:100%;
+
+    ::ng-deep{
+        .mat-mdc-form-field-subscript-wrapper{
+            display: none;
+        }
+    }
+}
+
