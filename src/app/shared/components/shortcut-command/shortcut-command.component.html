@@ -1,0 +1,21 @@
+<!-- <div class="shortcut-menu-container">
+    <button class="shortcut-button" (click)="toggleMenu()">Shortcut</button>
+    <div class="shortcut-menu" [class.show]="showMenu">
+      <div class="menu-item" (click)="command1()">Command 1</div>
+      <div class="menu-item" (click)="command2()">Command 2</div>
+      <div class="menu-item" (click)="command3()">Command 3</div>
+    </div>
+  </div> -->
+
+
+<button 
+    mat-raised-button [matMenuTriggerFor]="menu" (click)="openMenu()"
+    class="shortcut-menu-container"
+>   
+    <mat-icon>control_point</mat-icon>
+</button>
+<mat-menu #menu="matMenu" [overlapTrigger]="false">
+  <button mat-menu-item (click)="command1()">Command 1</button>
+  <button mat-menu-item (click)="command2()">Command 2</button>
+  <button mat-menu-item (click)="command3()">Command 3</button>
+</mat-menu>
