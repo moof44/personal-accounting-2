@@ -18,7 +18,7 @@
  *      3.9 conside the ff: tapResponse
  */
 
-import { computed, inject } from '@angular/core';
+import { computed, inject, Signal } from '@angular/core';
 import { Income, IncomeSettings } from '@app/models/global.model';
 import { IncomeService } from '@app/services/income.service';
 import { tapResponse } from '@ngrx/operators';
@@ -52,6 +52,40 @@ function withIncomeSettings() {
   );
 }
 
+function withFilterEntities(
+  entities: Signal<Income[]>, 
+  filter:any,
+  withPagination=true,
+) {
+  const allEntities = entities().filter(v=>{
+    const search = v.incomeSource + v.remarks;
+    const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
+    let isDateRange = true;
+
+    const normalizeDate = (date: Date) => {
+      const normalized = new Date(date);
+      normalized.setHours(0, 0, 0, 0);
+      return normalized;
+    };
+
+    if (filter.startDate() && filter.endDate()) {
+      const startDate = normalizeDate(filter.startDate()!);
+      const endDate = normalizeDate(filter.endDate()!);
+      const incomeDate = normalizeDate(v.date as Date);
+      isDateRange = incomeDate >= startDate && incomeDate <= endDate;
+    };
+
+    return isQuery && isDateRange;
+  });
+
+  if(withPagination){
+    const startIndex = (filter.currentPage() - 1) * filter.itemsPerPage();
+    const endIndex = startIndex + filter.itemsPerPage();
+    return allEntities.slice(startIndex, endIndex);
+  }
+  return allEntities;
+}
+
 export const IncomeStore = signalStore(
   withEntities<Income>(),
   withIncomeSettings(),
@@ -62,31 +96,9 @@ export const IncomeStore = signalStore(
     onDestroy(store) {},
   }),
   withComputed(({ entities, filter }) => ({
-    count: computed(() => entities().length),
+    count: computed(() => withFilterEntities(entities, filter, false).length),
     filteredEntities: computed(() => {
-      const allEntities = entities().filter(v=>{
-        const search = v.incomeSource + v.remarks;
-        const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
-        let isDateRange = true;
-
-        const normalizeDate = (date: Date) => {
-          const normalized = new Date(date);
-          normalized.setHours(0, 0, 0, 0);
-          return normalized;
-        };
-
-        if (filter.startDate() && filter.endDate()) {
-          const startDate = normalizeDate(filter.startDate()!);
-          const endDate = normalizeDate(filter.endDate()!);
-          const incomeDate = normalizeDate(v.date as Date);
-          isDateRange = incomeDate >= startDate && incomeDate <= endDate;
-        };
-
-        return isQuery && isDateRange;
-      });
-      const startIndex = (filter.currentPage() - 1) * filter.itemsPerPage();
-      const endIndex = startIndex + filter.itemsPerPage();
-      return allEntities.slice(startIndex, endIndex);
+      return withFilterEntities(entities, filter);
     }),
   })),
   withMethods((store, incomeService = inject(IncomeService)) => ({
