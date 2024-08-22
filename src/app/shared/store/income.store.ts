@@ -71,8 +71,17 @@ export const IncomeStore = signalStore(
         const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
         let isDateRange = true;
 
+        const normalizeDate = (date: Date) => {
+          const normalized = new Date(date);
+          normalized.setHours(0, 0, 0, 0);
+          return normalized;
+        };
+
         if (filter.startDate() && filter.endDate()) {
-          isDateRange = v.date >= filter.startDate()! && v.date <= filter.endDate()!;
+          const startDate = normalizeDate(filter.startDate()!);
+          const endDate = normalizeDate(filter.endDate()!);
+          const incomeDate = normalizeDate(v.date as Date);
+          isDateRange = incomeDate >= startDate && incomeDate <= endDate;
         };
 
         const returnVal = isQuery && isDateRange;
