@@ -16,6 +16,8 @@ export interface IncomeSettings{
     title: string
     filter: {
         query: string,
-        order: 'asc' | 'desc'
+        order: 'asc' | 'desc',
+        startDate: Date | null;
+        endDate: Date | null;
     }
 }
