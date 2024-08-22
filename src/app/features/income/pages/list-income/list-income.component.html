@@ -72,3 +72,11 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"></tr>
 </table>
+<mat-paginator 
+    [pageSizeOptions]="pageSizeOptions()"
+    [length]="store.count()"
+    [pageSize]="itemsPerPage()"
+    aria-label="Select page of periodic elements"
+    [ngClass]="mobileQuery.matches? 'mobile': ''"
+>
+</mat-paginator>
