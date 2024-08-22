@@ -40,19 +40,17 @@ function withIncomeSettings() {
   return signalStoreFeature(
     withState<IncomeSettings>({
       title: 'Income',
-      filter: { query: '', order: 'asc', startDate: null, endDate: null },
+      filter: { 
+        query: '', 
+        order: 'asc', 
+        startDate: null, 
+        endDate: null,
+        currentPage: 1,
+        itemsPerPage: 5
+      },
     })
   );
 }
-
-// const loadIncome = rxMethod<void>(
-//     pipe(
-//         tap(),
-//         exhaustMap(()=>{
-
-//         })
-//     )
-// )
 
 export const IncomeStore = signalStore(
   withEntities<Income>(),
@@ -65,8 +63,8 @@ export const IncomeStore = signalStore(
   }),
   withComputed(({ entities, filter }) => ({
     count: computed(() => entities().length),
-    filteredEntities: computed(() => 
-      entities().filter(v=>{
+    filteredEntities: computed(() => {
+      const allEntities = entities().filter(v=>{
         const search = v.incomeSource + v.remarks;
         const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
         let isDateRange = true;
@@ -84,10 +82,12 @@ export const IncomeStore = signalStore(
           isDateRange = incomeDate >= startDate && incomeDate <= endDate;
         };
 
-        const returnVal = isQuery && isDateRange;
-        return returnVal;
-      })
-    ),
+        return isQuery && isDateRange;
+      });
+      const startIndex = (filter.currentPage() - 1) * filter.itemsPerPage();
+      const endIndex = startIndex + filter.itemsPerPage();
+      return allEntities.slice(startIndex, endIndex);
+    }),
   })),
   withMethods((store, incomeService = inject(IncomeService)) => ({
     loadIncome: rxMethod<any>(
@@ -125,6 +125,12 @@ export const IncomeStore = signalStore(
     },
     setDateRangeFilter: (startDate: Date | null, endDate: Date | null) => {
       patchState(store, { filter: { ...store.filter(), startDate, endDate } });
+    },
+    setCurrentPage: (currentPage: number) => {
+      patchState(store, { filter: { ...store.filter(), currentPage } });
+    },
+    setItemsPerPage: (itemsPerPage: number) => {
+      patchState(store, { filter: { ...store.filter(), itemsPerPage } });
     }
   }))
 );

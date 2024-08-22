@@ -38,4 +38,26 @@
         transform: translateY(-50%);
     }
 }
-  
+
+mat-paginator{
+    ::ng-deep{
+        .mat-mdc-paginator-container{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+    }
+}
+
+mat-paginator.mobile{
+    ::ng-deep{
+        .mat-mdc-paginator-container{
+            .mat-mdc-paginator-range-label{
+                display: none;
+            }
+        }
+
+    }
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, type OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal, ViewChild, viewChild, type OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +13,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 
 @Component({
@@ -31,17 +33,23 @@ import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/pr
     MatDatepickerModule,
     MatIconModule,
     PreventSpaceTriggerDirectiveDirective,
+    MatPaginator, 
+    MatPaginatorModule,
   ],
   templateUrl: './list-income.component.html',
   styleUrl: './list-income.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListIncomeComponent implements OnInit {
+export class ListIncomeComponent implements OnInit, AfterViewInit {
   readonly store = inject(IncomeStore);
   private _router = inject(Router);
   private _fb = inject(FormBuilder);
 
   search = this._fb.control('');
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  itemsPerPage = signal(5)
+  pageSizeOptions = signal([5, 10, 25]);
 
   displayedColumns: string[] = ['date', 'incomeSource', 'amount'/* , 'remarks' */];
   dataSource = this.store.filteredEntities; // dataSource = input.required<Income[]>() // in case this will be a separate component
@@ -50,9 +58,27 @@ export class ListIncomeComponent implements OnInit {
     end: null,
   });
 
+  mobileQuery!: MediaQueryList;
+  private _mobileQueryListener: () => void;
+
+  constructor(
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher
+  ){
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
   ngOnInit(): void {
     //this.dataSource.set(this.store.entities());
     this.#_eventListener();
+  }
+
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(event => {
+      this.store.setCurrentPage(event.pageIndex + 1);
+      this.store.setItemsPerPage(event.pageSize);
+    });
   }
 
   #_eventListener(){
