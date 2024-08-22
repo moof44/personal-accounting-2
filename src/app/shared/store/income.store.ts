@@ -19,7 +19,6 @@
  */
 
 import { computed, inject } from '@angular/core';
-import { CollectionReference } from '@angular/fire/firestore';
 import { Income, IncomeSettings } from '@app/models/global.model';
 import { IncomeService } from '@app/services/income.service';
 import { tapResponse } from '@ngrx/operators';
@@ -41,7 +40,7 @@ function withIncomeSettings() {
   return signalStoreFeature(
     withState<IncomeSettings>({
       title: 'Income',
-      filter: { query: '', order: 'asc' },
+      filter: { query: '', order: 'asc', startDate: null, endDate: null },
     })
   );
 }
@@ -66,10 +65,20 @@ export const IncomeStore = signalStore(
   }),
   withComputed(({ entities, filter }) => ({
     count: computed(() => entities().length),
-    filteredEntities: computed(() => entities().filter(v=>{
+    filteredEntities: computed(() => 
+      entities().filter(v=>{
         const search = v.incomeSource + v.remarks;
-        return search.toLowerCase().includes(filter.query().toLowerCase())
-    })),
+        const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
+        let isDateRange = true;
+
+        if (filter.startDate() && filter.endDate()) {
+          isDateRange = v.date >= filter.startDate()! && v.date <= filter.endDate()!;
+        };
+
+        const returnVal = isQuery && isDateRange;
+        return returnVal;
+      })
+    ),
   })),
   withMethods((store, incomeService = inject(IncomeService)) => ({
     loadIncome: rxMethod<any>(
@@ -99,8 +108,14 @@ export const IncomeStore = signalStore(
     deleteIncome: (id: string) => {
       return from(incomeService.delete(id)).pipe(take(1));
     },
-    setFilter: (query:string, order: 'asc'| 'desc')=>{
-        patchState(store, {filter: {query, order}})
+    setQueryFilter: (query: string) => {
+      patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator
+    },
+    setOrderFilter: (order: 'asc' | 'desc') => {
+      patchState(store, { filter: { ...store.filter(), order } });
+    },
+    setDateRangeFilter: (startDate: Date | null, endDate: Date | null) => {
+      patchState(store, { filter: { ...store.filter(), startDate, endDate } });
     }
   }))
 );
