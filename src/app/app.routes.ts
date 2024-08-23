@@ -22,7 +22,6 @@ export const routes: Routes = [
       },
       {
         matcher: (url: any) => {
-          console.log('url', url);
           if (
             url.length >= 1 &&
             (url[0].path === 'add' ||

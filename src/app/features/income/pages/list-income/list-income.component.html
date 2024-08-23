@@ -73,7 +73,12 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"></tr>
+    <tr 
+        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"
+        class="q-pointer row-highlight"
+        [matTooltip]="row.remarks"
+        matTooltipPosition="above"
+    ></tr>
 </table>
 <mat-paginator 
     [pageSizeOptions]="pageSizeOptions()"

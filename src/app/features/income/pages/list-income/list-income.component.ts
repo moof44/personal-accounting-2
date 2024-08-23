@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { MediaMatcher } from '@angular/cdk/layout';
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'page-list-income',
@@ -35,6 +35,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
     PreventSpaceTriggerDirectiveDirective,
     MatPaginator, 
     MatPaginatorModule,
+    MatTooltipModule,
   ],
   templateUrl: './list-income.component.html',
   styleUrl: './list-income.component.scss',
