@@ -8,6 +8,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } fro
 import { IncomeStore } from '@app/shared/store/income.store';
 import { AddUpdateIncomeComponent } from './pages/add-update-income/add-update-income.component';
 import { ListIncomeComponent } from './pages/list-income/list-income.component';
+import { pageComponentAnimation } from '@app/shared/animations/general-animations';
 
 @Component({
   selector: 'feature-income',
@@ -27,10 +28,14 @@ import { ListIncomeComponent } from './pages/list-income/list-income.component';
   ],
   templateUrl: './income.component.html',
   styleUrl: './income.component.scss',
+  animations: [
+    pageComponentAnimation,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeComponent implements OnInit {
   @HostBinding('class.content__page') pageClass = true;
+  @HostBinding('@routeAnimations') routeAnimations = true;
 
   // displayedColumns: string[] = ['date', 'incomeSource', 'amount', 'remarks'];
   readonly store = inject(IncomeStore);
