@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Firestore } from '@angular/fire/firestore';
 import { RouterOutlet } from '@angular/router';
 import { AuthorizedLayoutComponent } from '@shared/layout/authorized-layout/authorized-layout.component';
-import { IncomeStore } from './shared/store/income.store';
-import { Firestore } from '@angular/fire/firestore';
-import { ShortcutCommandComponent } from './shared/components/shortcut-command/shortcut-command.component';
+import { pageComponentAnimation } from '@shared/animations/general-animations';
+import { ShortcutCommandComponent } from '@shared/components/shortcut-command/shortcut-command.component';
+import { IncomeStore } from '@shared/store/income.store';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,10 @@ import { ShortcutCommandComponent } from './shared/components/shortcut-command/s
     IncomeStore,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  animations: [
+    pageComponentAnimation,
+  ],
 })
 export class AppComponent implements OnInit{
   readonly store = inject(IncomeStore);

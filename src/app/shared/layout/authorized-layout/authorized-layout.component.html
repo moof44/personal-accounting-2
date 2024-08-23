@@ -23,12 +23,15 @@
     <!-- [mode]="mobileQuery.matches ? 'over' : 'side'" -->
         <mat-nav-list>
             @for (nav of fillerNav2; track nav) {
-                <a mat-list-item routerLink="{{nav.link}}">{{nav.label}}</a>
+                <a 
+                    mat-list-item routerLink="{{nav.link}}"
+                    (click)="snav.close()"
+                >{{nav.label}}</a>
             }
         </mat-nav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content class="content">
+    <mat-sidenav-content class="content" @routeAnimations>
         <ng-content></ng-content>
     </mat-sidenav-content>
 </mat-sidenav-container>
