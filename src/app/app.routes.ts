@@ -51,4 +51,11 @@ export const routes: Routes = [
         (m) => m.ExpenseComponent
       ),
   },
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./features/about/about.component').then(
+        (m) => m.AboutComponent
+      ),
+  },
 ];

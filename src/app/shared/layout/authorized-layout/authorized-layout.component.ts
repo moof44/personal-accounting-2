@@ -37,7 +37,11 @@ export class AuthorizedLayoutComponent implements OnInit {
     {
       label: 'Expense',
       link: '/expense'
-    }
+    },
+    {
+      label: 'About',
+      link: '/about'
+    },
   ]
 
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
