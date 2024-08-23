@@ -8,6 +8,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { RouterModule } from '@angular/router';
 import { NavigationMenu } from '@models/global.model';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
@@ -20,6 +21,14 @@ import { NavigationMenu } from '@models/global.model';
   ],
   templateUrl: './authorized-layout.component.html',
   styleUrl: './authorized-layout.component.scss',
+  animations: [
+    trigger('routeAnimations', [
+      transition('* <=> *', [
+        style({ opacity: 0 }),
+        animate('500ms', style({ opacity: 1 }))
+      ])
+    ])
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorizedLayoutComponent implements OnInit {
