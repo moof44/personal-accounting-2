@@ -23,3 +23,9 @@ export interface IncomeSettings{
         itemsPerPage: number; // Added for pagination
     }
 }
+
+export interface DisplayedColumns {
+    column: string;
+    header: string;
+    type?: string;
+  }

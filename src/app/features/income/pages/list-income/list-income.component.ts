@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal, ViewChild, viewChild, type OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Signal, signal, ViewChild, viewChild, type OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,6 +16,8 @@ import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/pr
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { MediaMatcher } from '@angular/cdk/layout';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
+import { Income } from '@app/models/global.model';
 
 @Component({
   selector: 'page-list-income',
@@ -36,6 +38,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatPaginator, 
     MatPaginatorModule,
     MatTooltipModule,
+    CommonTableComponent,
   ],
   templateUrl: './list-income.component.html',
   styleUrl: './list-income.component.scss',
@@ -52,8 +55,11 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
   itemsPerPage = signal(5)
   pageSizeOptions = signal([5, 10, 25]);
 
-  displayedColumns: string[] = ['date', 'incomeSource', 'amount'/* , 'remarks' */];
-  dataSource = this.store.filteredEntities; // dataSource = input.required<Income[]>() // in case this will be a separate component
+  // displayedColumns: string[] = ['date', 'incomeSource', 'amount'/* , 'remarks' */];
+  // dataSource = this.store.filteredEntities; // dataSource = input.required<Income[]>() // in case this will be a separate component
+  displayedColumns: Signal<any[]> = signal(['id', 'incomeSource', 'amount', 'remarks']);
+  dataSource: Signal<Income[]> = signal([]);
+  
   readonly range = this._fb.group({
     start: null,
     end: null,
@@ -68,6 +74,7 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.dataSource = this.store.filteredEntities;
   }
 
   ngOnInit(): void {
@@ -76,10 +83,10 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(event => {
-      this.store.setCurrentPage(event.pageIndex + 1);
-      this.store.setItemsPerPage(event.pageSize);
-    });
+    // this.paginator.page.subscribe(event => {
+    //   this.store.setCurrentPage(event.pageIndex + 1);
+    //   this.store.setItemsPerPage(event.pageSize);
+    // });
   }
 
   #_eventListener(){

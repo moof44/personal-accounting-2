@@ -1,0 +1,29 @@
+<table 
+    mat-table [dataSource]="dataSource()" class="mat-elevation-z8"
+    matSort="id"
+>
+    <ng-container *ngFor="let col of displayedColumns()">
+        <ng-container [matColumnDef]="col.column">
+            <th mat-header-cell *matHeaderCellDef class="center-text">{{col.header}}</th>
+            <!-- <td mat-cell *matCellDef="let element"> {{element.date | date: 'M/d/y'}} </td> -->
+            <td mat-cell *matCellDef="let element"> {{element[col.column]}} </td>
+        </ng-container>
+    </ng-container>
+    
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr 
+        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"
+        class="q-pointer row-highlight"
+        [matTooltip]="row.remarks"
+        matTooltipPosition="above"
+    ></tr>
+</table>
+<!-- <mat-paginator 
+    [pageSizeOptions]="pageSizeOptions()"
+    [length]="store.count()"
+    [pageSize]="itemsPerPage()"
+    aria-label="Select page of periodic elements"
+    [ngClass]="mobileQuery.matches? 'mobile': ''"
+>
+</mat-paginator> -->
