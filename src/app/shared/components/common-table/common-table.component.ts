@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, Signal, type OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, EventEmitter, inject, input, output, signal, Signal, ViewChild, type OnInit } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -11,8 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DisplayedColumns, Income } from '@app/models/global.model';
+import { DisplayedColumns, FilterSettings, Income, IncomeSettings, TableFilter } from '@app/models/global.model';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
   selector: 'shared-common-table',
   standalone: true,
@@ -37,14 +38,82 @@ import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/pr
   styleUrl: './common-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CommonTableComponent implements OnInit {
+export class CommonTableComponent implements OnInit, AfterViewInit {
+  
+  private _fb = inject(FormBuilder);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // TABLE RELATED
   dataSource = input.required<Income[]>();
   displayedColumns = input.required<DisplayedColumns[]>();
+  dataCount = input.required<number>();
+  pageSizeOptions = input([5, 10, 25]);
+  rowClick = input<(args?:any)=>void>(()=>{});
+  tooltipColumn = input<string>();
+  columns = computed(() =>
+    this.displayedColumns().map((col) => col.column)
+  );
+  // PAGINATION RELATED
+  itemsPerPage = signal(5)
+  screensize = input<'mobile'|'desktop'>('desktop');
+  pagination = output<{current: number, pageSize: number}>();
+  // SEARCH RELATED
+  filter = input<FilterSettings>();
+  #searchInput = computed(()=>{
+    this.search.setValue(this.filter()?.query || '');
+    this.range.patchValue({
+      start: this.filter()?.startDate as any,
+      end: this.filter()?.endDate as any,
+    });
+  });
+  search = this._fb.control('');
+  readonly range = this._fb.group({
+    start: null,
+    end: null,
+  });
+  setFilter = output<TableFilter>();
 
 
-  ngOnInit(): void { }
+  constructor(){
+  }
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(event => {
+      this.pagination.emit({current: event.pageIndex + 1, pageSize: event.pageSize});
+    });
+  }
+
+
+  ngOnInit(): void { 
+    this.#eventListener();
+  }
 
   onRowClick(id:string){}
+
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
+
+  clearDatePicker() {
+    this.range.patchValue({ start: null, end: null });
+  }
+
+
+  #eventListener(){
+    this.search.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe(v => {
+        this.setFilter.emit({type: 'search', value: v});
+      });
+
+    this.range.valueChanges.subscribe(value => {
+      this.setFilter.emit({type: 'date-range', value: value});
+    });
+
+    this.#searchInput(); // this is to trigger the computed property
+  }
+
 
 }

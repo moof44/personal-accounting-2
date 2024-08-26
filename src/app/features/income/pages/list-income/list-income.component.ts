@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Signal, signal, ViewChild, viewChild, type OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  inject,
+  Signal,
+  signal,
+  ViewChild,
+  viewChild,
+  type OnInit,
+} from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,15 +21,21 @@ import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { IncomeStore } from '@app/shared/store/income.store';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MediaMatcher } from '@angular/cdk/layout';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
-import { Income } from '@app/models/global.model';
+import {
+  FilterSettings,
+  Income,
+  IncomeSettings,
+  Pagination,
+  TableFilter,
+} from '@app/models/global.model';
 
 @Component({
   selector: 'page-list-income',
@@ -35,7 +53,7 @@ import { Income } from '@app/models/global.model';
     MatDatepickerModule,
     MatIconModule,
     PreventSpaceTriggerDirectiveDirective,
-    MatPaginator, 
+    MatPaginator,
     MatPaginatorModule,
     MatTooltipModule,
     CommonTableComponent,
@@ -47,73 +65,65 @@ import { Income } from '@app/models/global.model';
 export class ListIncomeComponent implements OnInit, AfterViewInit {
   readonly store = inject(IncomeStore);
   private _router = inject(Router);
-  private _fb = inject(FormBuilder);
-
-  search = this._fb.control('');
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  itemsPerPage = signal(5)
+  itemsPerPage = signal(5);
   pageSizeOptions = signal([5, 10, 25]);
 
-  // displayedColumns: string[] = ['date', 'incomeSource', 'amount'/* , 'remarks' */];
-  // dataSource = this.store.filteredEntities; // dataSource = input.required<Income[]>() // in case this will be a separate component
-  displayedColumns: Signal<any[]> = signal(['id', 'incomeSource', 'amount', 'remarks']);
+  #defaultColumns = [
+    { column: 'date', header: 'Date', type: 'date' },
+    { column: 'incomeSource', header: 'Income Source' },
+    { column: 'amount', header: 'Amount' },
+  ];
+  #additionalColumn = { column: 'remarks', header: 'Remarks' };
+  displayedColumns = signal(this.#defaultColumns);
+
   dataSource: Signal<Income[]> = signal([]);
-  
-  readonly range = this._fb.group({
-    start: null,
-    end: null,
-  });
+  filter = computed(() => this.store.filter());
+  tooltipColumn = signal('remarks');
 
   mobileQuery!: MediaQueryList;
   private _mobileQueryListener: () => void;
 
-  constructor(
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher
-  ){
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 768px)');
+    this.#setMobileQuery();
+    this._mobileQueryListener = () => {
+      this.#setMobileQuery();
+      changeDetectorRef.detectChanges()
+    };
     this.mobileQuery.addListener(this._mobileQueryListener);
+
     this.dataSource = this.store.filteredEntities;
   }
 
+  #setMobileQuery(){
+    if(this.mobileQuery.matches) {
+      this.displayedColumns.set(this.#defaultColumns);
+      this.tooltipColumn.set('remarks');
+    }else{
+      this.displayedColumns.set(this.#defaultColumns.concat(this.#additionalColumn))
+      this.tooltipColumn.set('');
+    }
+  }
+
   ngOnInit(): void {
-    //this.dataSource.set(this.store.entities());
-    this.#_eventListener();
+
   }
 
-  ngAfterViewInit(): void {
-    // this.paginator.page.subscribe(event => {
-    //   this.store.setCurrentPage(event.pageIndex + 1);
-    //   this.store.setItemsPerPage(event.pageSize);
-    // });
+  ngAfterViewInit(): void {}
+
+  rowClick = (id: number) => this._router.navigate(['/income/update', id]);
+
+  onPageChange({ current, pageSize }: Pagination) {
+    this.store.setCurrentPage(current);
+    this.store.setItemsPerPage(pageSize);
   }
 
-  #_eventListener(){
-    this.search.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
-      .subscribe(v => {
-        this.store.setQueryFilter(v ?? '');
-      });
+  setFilter = ({ type, value }: TableFilter) =>
+    type == 'search'
+      ? this.store.setQueryFilter(value)
+      : this.store.setDateRangeFilter(value.start!, value.end!);
 
-    this.range.valueChanges.subscribe(value => {
-      this.store.setDateRangeFilter(value.start!, value.end!);
-    });
-  }
-
-  onRowClick(id: number) {
-    this._router.navigate(['/income/update', id]);
-  }
-
-  stopPropagation(event: Event) {
-    event.stopPropagation();
-  }
-
-  clearDatePicker() {
-    this.range.patchValue({ start: null, end: null });
-  }
 
 }

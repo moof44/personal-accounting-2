@@ -65,7 +65,7 @@
     
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr 
-        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"
+        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="rowClick(row.id)"
         class="q-pointer row-highlight"
         [matTooltip]="row.remarks"
         matTooltipPosition="above">
@@ -79,8 +79,17 @@
     [ngClass]="mobileQuery.matches? 'mobile': ''"
 >
 </mat-paginator> -->
-
-<shared-common-table
-    [dataSource]="dataSource()"
-    [displayedColumns]="displayedColumns()">
-</shared-common-table>
+@defer {
+    <shared-common-table
+        [dataSource]="dataSource()"
+        [displayedColumns]="displayedColumns()"
+        [dataCount] = "store.count()"
+        [rowClick]="rowClick"
+        [screensize]="mobileQuery.matches? 'mobile': 'desktop'"
+        [filter]="filter()"
+        [tooltipColumn]="tooltipColumn()"
+        (setFilter)="setFilter($event)"
+        (pagination)="onPageChange($event)"
+    >
+    </shared-common-table>
+}

@@ -1,29 +1,65 @@
+<mat-accordion class="search-expansion">
+  <mat-expansion-panel>
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+              <mat-form-field class="income-list-search">
+                  <mat-label>Search</mat-label>
+                  <input matInput [formControl]="search" 
+                      (click)="stopPropagation($event)"
+                      preventSpaceTrigger
+                  />
+              </mat-form-field>
+          </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+          <mat-form-field class="filter">
+              <mat-label>Enter a date range</mat-label>
+              <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date">
+                  <input matEndDate formControlName="end" placeholder="End date">
+              </mat-date-range-input>
+              <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+              <div class="clear-icon">
+                  <button mat-icon-button matSuffix (click)="clearDatePicker()" aria-label="Clear">
+                      <mat-icon>close</mat-icon>
+                  </button>
+              </div>
+          </mat-form-field>
+      </ng-template>        
+  </mat-expansion-panel> 
+</mat-accordion>
+
 <table 
     mat-table [dataSource]="dataSource()" class="mat-elevation-z8"
     matSort="id"
 >
-    <ng-container *ngFor="let col of displayedColumns()">
-        <ng-container [matColumnDef]="col.column">
-            <th mat-header-cell *matHeaderCellDef class="center-text">{{col.header}}</th>
-            <!-- <td mat-cell *matCellDef="let element"> {{element.date | date: 'M/d/y'}} </td> -->
-            <td mat-cell *matCellDef="let element"> {{element[col.column]}} </td>
-        </ng-container>
+  <ng-container *ngFor="let col of displayedColumns()">
+    <ng-container [matColumnDef]="col.column">
+      <th mat-header-cell *matHeaderCellDef class="center-text">{{col.header}}</th>
+      @if (col.type === 'date') {
+        <td mat-cell *matCellDef="let element"> {{element[col.column] | date: 'M/d/y'}} </td>
+      }@else {
+        <td mat-cell *matCellDef="let element"> {{element[col.column]}} </td>
+      }
     </ng-container>
+  </ng-container>
     
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr 
-        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"
-        class="q-pointer row-highlight"
-        [matTooltip]="row.remarks"
-        matTooltipPosition="above"
-    ></tr>
+  <tr mat-header-row *matHeaderRowDef="columns()"></tr>
+  <tr 
+      mat-row *matRowDef="let row; columns: columns(); let i = index" (click)="rowClick()!(row.id)"
+      class="q-pointer row-highlight"
+      [matTooltip]="row[tooltipColumn()??'']"
+      matTooltipPosition="above">
+  </tr>
 </table>
-<!-- <mat-paginator 
+
+<mat-paginator 
     [pageSizeOptions]="pageSizeOptions()"
-    [length]="store.count()"
+    [length]="dataCount()"
     [pageSize]="itemsPerPage()"
     aria-label="Select page of periodic elements"
-    [ngClass]="mobileQuery.matches? 'mobile': ''"
+    [ngClass]="screensize()"
 >
-</mat-paginator> -->
+</mat-paginator>
