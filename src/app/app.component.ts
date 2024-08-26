@@ -5,6 +5,7 @@ import { AuthorizedLayoutComponent } from '@shared/layout/authorized-layout/auth
 import { pageComponentAnimation } from '@shared/animations/general-animations';
 import { ShortcutCommandComponent } from '@shared/components/shortcut-command/shortcut-command.component';
 import { IncomeStore } from '@shared/store/income.store';
+import { ExpenseStore } from './shared/store/expense.store';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { IncomeStore } from '@shared/store/income.store';
   ],
   providers: [
     IncomeStore,
+    ExpenseStore,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -24,14 +26,19 @@ import { IncomeStore } from '@shared/store/income.store';
   ],
 })
 export class AppComponent implements OnInit{
-  readonly store = inject(IncomeStore);
+  readonly incomeStore = inject(IncomeStore);
+  readonly expenseStore = inject(ExpenseStore);
   title = 'personal-accounting-2';
 
   constructor(private _firestore: Firestore){
   }
 
   ngOnInit(): void {
-    this.store.loadIncome('');
-    
+    this.#loadStores();
+  }
+
+  #loadStores(){
+    this.incomeStore.loadIncome('');
+    this.expenseStore.loadExpense('');
   }
 }

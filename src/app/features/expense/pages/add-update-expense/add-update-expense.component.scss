@@ -1,0 +1,21 @@
+.expense-input-form{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+
+    &__input{
+        min-width: 21rem;
+        max-width: 100%;
+        width: 49%;
+    }
+
+    &__actions{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, EventEmitter, inject, input, output, signal, Signal, ViewChild, type OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, input, output, signal, ViewChild, type OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DisplayedColumns, FilterSettings, Income, IncomeSettings, TableFilter } from '@app/models/global.model';
+import { DisplayedColumns, FilterSettings, TableFilter } from '@app/models/global.model';
+import { Income } from '@app/models/income.model';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
@@ -44,7 +45,7 @@ export class CommonTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   // TABLE RELATED
-  dataSource = input.required<Income[]>();
+  dataSource = input.required<any[]>();
   displayedColumns = input.required<DisplayedColumns[]>();
   dataCount = input.required<number>();
   pageSizeOptions = input([5, 10, 25]);

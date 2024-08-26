@@ -24,6 +24,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { Expense } from '@app/models/expense.model';
 import {
   Pagination,
   TableFilter
@@ -31,10 +32,11 @@ import {
 import { Income } from '@app/models/income.model';
 import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
+import { ExpenseStore } from '@app/shared/store/expense.store';
 import { IncomeStore } from '@app/shared/store/income.store';
 
 @Component({
-  selector: 'page-list-income',
+  selector: 'app-list-expense',
   standalone: true,
   imports: [
     CommonModule,
@@ -54,19 +56,19 @@ import { IncomeStore } from '@app/shared/store/income.store';
     MatTooltipModule,
     CommonTableComponent,
   ],
-  templateUrl: './list-income.component.html',
-  styleUrl: './list-income.component.scss',
+  templateUrl: './list-expense.component.html',
+  styleUrl: './list-expense.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListIncomeComponent implements OnInit, AfterViewInit {
-  readonly store = inject(IncomeStore);
+export class ListExpenseComponent implements OnInit {
+  readonly store = inject(ExpenseStore);
   private _router = inject(Router);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   #defaultColumns = [
     { column: 'date', header: 'Date', type: 'date' },
-    { column: 'incomeSource', header: 'Income Source' },
+    { column: 'description', header: 'Description' },
     { column: 'amount', header: 'Amount' },
   ];
   #additionalColumn = { column: 'remarks', header: 'Remarks' };
@@ -74,7 +76,7 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
   displayedColumns = signal(this.#defaultColumns);
   itemsPerPage = signal(5);
   pageSizeOptions = signal([5, 10, 25]);
-  dataSource: Signal<Income[]> = signal([]);
+  dataSource: Signal<Expense[]> = signal([]);
   filter = computed(() => this.store.filter());
   tooltipColumn = signal('remarks');
 
@@ -93,6 +95,7 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
     this.dataSource = this.store.filteredEntities;
   }
 
+
   #setMobileQuery(){
     if(this.mobileQuery.matches) {
       this.displayedColumns.set(this.#defaultColumns);
@@ -106,7 +109,7 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
   ngAfterViewInit(): void {}
 
-  rowClick = (id: number) => this._router.navigate(['/income/update', id]);
+  rowClick = (id: number) => this._router.navigate(['/expense/update', id]);
 
   onPageChange({ current, pageSize }: Pagination) {
     this.store.setCurrentPage(current);
@@ -117,6 +120,5 @@ export class ListIncomeComponent implements OnInit, AfterViewInit {
     type == 'search'
       ? this.store.setQueryFilter(value)
       : this.store.setDateRangeFilter(value.start!, value.end!);
-
 
 }

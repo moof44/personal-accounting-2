@@ -25,10 +25,11 @@ export const routes: Routes = [
           if (
             url.length >= 1 &&
             (url[0].path === 'add' ||
-              (url[0].path.startsWith('update') &&
-                url[1]?.path)) // Check if there's any text after 'update/'
+              (url[0].path.startsWith('update') && url[1]?.path)) // Check if there's any text after 'update/'
           ) {
-            const posParams = url[1]?.path? { id: new UrlSegment(url[1].path, {}) }: { id: new UrlSegment('', {}) };
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
             return {
               consumed: url,
               posParams,
@@ -49,12 +50,41 @@ export const routes: Routes = [
       import('./features/expense/expense.component').then(
         (m) => m.ExpenseComponent
       ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/expense/pages/list-expense/list-expense.component'
+          ).then((m) => m.ListExpenseComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path)) // Check if there's any text after 'update/'
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/expense/pages/add-update-expense/add-update-expense.component'
+          ).then((m) => m.AddUpdateExpenseComponent),
+      },
+    ],
   },
   {
     path: 'about',
     loadComponent: () =>
-      import('./features/about/about.component').then(
-        (m) => m.AboutComponent
-      ),
+      import('./features/about/about.component').then((m) => m.AboutComponent),
   },
 ];

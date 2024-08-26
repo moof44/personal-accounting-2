@@ -19,10 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { IncomeStore } from '@app/shared/store/income.store';
+import { ExpenseStore } from '@app/shared/store/expense.store';
 
 @Component({
-  selector: 'app-add-update-income',
+  selector: 'app-add-update-expense',
   standalone: true,
   imports: [
     CommonModule,
@@ -35,49 +35,49 @@ import { IncomeStore } from '@app/shared/store/income.store';
     MatCardModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './add-update-income.component.html',
-  styleUrl: './add-update-income.component.scss',
+  templateUrl: './add-update-expense.component.html',
+  styleUrl: './add-update-expense.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddUpdateIncomeComponent implements OnInit {
+export class AddUpdateExpenseComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _router = inject(Router);
-  private readonly _incomeStore = inject(IncomeStore);
+  private readonly _expenseStore = inject(ExpenseStore);
 
   formGroup = this._fb.group({
     id: '',
     date: [new Date(), Validators.required],
-    incomeSource: ["Aga's Detailing", Validators.required],
+    description: ["Meralo", Validators.required],
     amount: [1000, Validators.required],
     remarks: '',
   });
 
   @Input()
   set id(id: string) {
-    this.incomeId = id;
-    const income = this._incomeStore.entities().find((v) => v.id === id)!;
-    this.formGroup.patchValue(income as any);
+    this.expenseId = id;
+    const expense = this._expenseStore.entities().find((v) => v.id === id)!;
+    this.formGroup.patchValue(expense as any);
   }
 
-  incomeId = '';
+  expenseId = '';
 
   ngOnInit(): void {}
 
   goBack() {
-    this._router.navigate(['/income']);
+    this._router.navigate(['/expense']);
   }
 
   onSubmit() {
     if (this.formGroup.valid) {
-      if (this.incomeId) {
-        this._incomeStore
-          .updateIncome(this.incomeId, this.formGroup.value as any)
+      if (this.expenseId) {
+        this._expenseStore
+          .updateExpense(this.expenseId, this.formGroup.value as any)
           .subscribe((v) => {
             this.goBack();
           });
       } else {
-        this._incomeStore
-          .addIncome(this.formGroup.value as any)
+        this._expenseStore
+          .addExpense(this.formGroup.value as any)
           .subscribe((v) => {
             if (v) this.goBack();
           });
@@ -86,11 +86,12 @@ export class AddUpdateIncomeComponent implements OnInit {
     }
   }
 
-  deleteIncome() {
-    if (this.incomeId) {
-      this._incomeStore.deleteIncome(this.incomeId).subscribe((v) => {
+  deleteExpense() {
+    if (this.expenseId) {
+      this._expenseStore.deleteExpense(this.expenseId).subscribe((v) => {
         this.goBack();
       })
     }
   }
+
 }

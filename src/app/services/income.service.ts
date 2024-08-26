@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentReference, Firestore, updateDoc } from '@angular/fire/firestore';
-import { Income } from '@app/models/global.model';
+import { Income } from '@app/models/income.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -21,7 +21,6 @@ export class IncomeService {
   save(data:Partial<Income>){
     //if(!data) return;
     return addDoc(this._incomeCollection, data).then((documentReference: DocumentReference) => {
-      console.log('save docRef', documentReference);
       return documentReference;
     }).catch(e=>{return null})
   }

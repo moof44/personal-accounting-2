@@ -19,7 +19,8 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
-import { Income, IncomeSettings } from '@app/models/global.model';
+import { TableSettings } from '@app/models/global.model';
+import { Income } from '@app/models/income.model';
 import { IncomeService } from '@app/services/income.service';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -38,7 +39,7 @@ import { from, map, pipe, switchMap, take } from 'rxjs';
 
 function withIncomeSettings() {
   return signalStoreFeature(
-    withState<IncomeSettings>({
+    withState<TableSettings>({
       title: 'Income',
       filter: { 
         query: '', 
@@ -91,7 +92,7 @@ export const IncomeStore = signalStore(
   withIncomeSettings(),
   withHooks({
     onInit(store) {
-      watchState(store, (state) => console.log);
+      //watchState(store, (state) => console.log);
     },
     onDestroy(store) {},
   }),
