@@ -121,6 +121,44 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'purchase', // New route for Purchase
+    loadComponent: () =>
+      import('./features/purchase/purchase.component').then(
+        (m) => m.PurchaseComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/purchase/pages/list-purchase/list-purchase.component'
+          ).then((m) => m.ListPurchaseComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path))
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/purchase/pages/add-update-purchase/add-update-purchase.component'
+          ).then((m) => m.AddUpdatePurchaseComponent),
+      },
+    ],
+  },
+  {
     path: 'about',
     loadComponent: () =>
       import('./features/about/about.component').then((m) => m.AboutComponent),

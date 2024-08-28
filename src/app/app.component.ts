@@ -7,6 +7,7 @@ import { ShortcutCommandComponent } from '@shared/components/shortcut-command/sh
 import { IncomeStore } from '@shared/store/income.store';
 import { ExpenseStore } from './shared/store/expense.store';
 import { CapitalStore } from './shared/store/capital.store';
+import { PurchaseStore } from './shared/store/purchase.store';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ import { CapitalStore } from './shared/store/capital.store';
     IncomeStore,
     ExpenseStore,
     CapitalStore,
+    PurchaseStore, 
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -31,6 +33,8 @@ export class AppComponent implements OnInit{
   readonly incomeStore = inject(IncomeStore);
   readonly expenseStore = inject(ExpenseStore);
   readonly capitalStore = inject(CapitalStore);
+  readonly purchaseStore = inject(PurchaseStore);
+
   title = 'personal-accounting-2';
 
   constructor(private _firestore: Firestore){
@@ -44,5 +48,6 @@ export class AppComponent implements OnInit{
     this.incomeStore.loadIncome('');
     this.expenseStore.loadExpense('');
     this.capitalStore.loadCapital('');
+    this.purchaseStore.loadPurchase('');
   }
 }
