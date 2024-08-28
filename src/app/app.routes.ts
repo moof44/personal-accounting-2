@@ -22,14 +22,14 @@ export const routes: Routes = [
       },
       {
         matcher: (url: any) => {
-          console.log('url', url);
           if (
             url.length >= 1 &&
             (url[0].path === 'add' ||
-              (url[0].path.startsWith('update') &&
-                url[1]?.path)) // Check if there's any text after 'update/'
+              (url[0].path.startsWith('update') && url[1]?.path)) // Check if there's any text after 'update/'
           ) {
-            const posParams = url[1]?.path? { id: new UrlSegment(url[1].path, {}) }: { id: new UrlSegment('', {}) };
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
             return {
               consumed: url,
               posParams,
@@ -50,12 +50,117 @@ export const routes: Routes = [
       import('./features/expense/expense.component').then(
         (m) => m.ExpenseComponent
       ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/expense/pages/list-expense/list-expense.component'
+          ).then((m) => m.ListExpenseComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path)) // Check if there's any text after 'update/'
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/expense/pages/add-update-expense/add-update-expense.component'
+          ).then((m) => m.AddUpdateExpenseComponent),
+      },
+    ],
+  },
+  {
+    path: 'capital',
+    loadComponent: () =>
+      import('./features/capital/capital.component').then(
+        (m) => m.CapitalComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/capital/pages/list-capital/list-capital.component'
+          ).then((m) => m.ListCapitalComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path)) 
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/capital/pages/add-update-capital/add-update-capital.component'
+          ).then((m) => m.AddUpdateCapitalComponent),
+      },
+    ],
+  },
+  {
+    path: 'purchase', // New route for Purchase
+    loadComponent: () =>
+      import('./features/purchase/purchase.component').then(
+        (m) => m.PurchaseComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/purchase/pages/list-purchase/list-purchase.component'
+          ).then((m) => m.ListPurchaseComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path))
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/purchase/pages/add-update-purchase/add-update-purchase.component'
+          ).then((m) => m.AddUpdatePurchaseComponent),
+      },
+    ],
   },
   {
     path: 'about',
     loadComponent: () =>
-      import('./features/about/about.component').then(
-        (m) => m.AboutComponent
-      ),
+      import('./features/about/about.component').then((m) => m.AboutComponent),
   },
 ];

@@ -1,57 +1,55 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, inject, Input, signal, type OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, signal, type OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { CapitalStore } from '@app/shared/store/capital.store';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
-import { IncomeStore } from '@app/shared/store/income.store';
-import { AddUpdateIncomeComponent } from './pages/add-update-income/add-update-income.component';
-import { ListIncomeComponent } from './pages/list-income/list-income.component';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
+import { ListCapitalComponent } from './pages/list-capital/list-capital.component';
+import { AddUpdateCapitalComponent } from './pages/add-update-capital/add-update-capital.component';
+
 
 @Component({
-  selector: 'feature-income',
+  selector: 'feature-capital',
   standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
     MatCardModule,
     MatButtonModule,
-    ListIncomeComponent,
-    AddUpdateIncomeComponent,
+    ListCapitalComponent,
+    AddUpdateCapitalComponent,
     RouterOutlet,
     RouterModule,
   ],
   providers: [
     provideNativeDateAdapter()
   ],
-  templateUrl: './income.component.html',
-  styleUrl: './income.component.scss',
+  templateUrl: './capital.component.html',
+  styleUrl: './capital.component.scss',
   animations: [
     pageComponentAnimation,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IncomeComponent implements OnInit {
+export class CapitalComponent implements OnInit {
   @HostBinding('class.content__page') pageClass = true;
   @HostBinding('@routeAnimations') routeAnimations = true;
 
-  // displayedColumns: string[] = ['date', 'incomeSource', 'amount', 'remarks'];
-  readonly store = inject(IncomeStore);
-  title = 'Income';
-  //currentRoute = '';
+  readonly store = inject(CapitalStore);
+  title = 'Capital';
   currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-  ){
-  }
+  ){}
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     const currentUrl = this.route.snapshot?.url[0]?.path;
-    if(currentUrl === '/income/add'){
+    if(currentUrl === '/capital/add'){
       this.currentPage.set('add');
     }else{
       this.currentPage.set('list');
@@ -67,8 +65,8 @@ export class IncomeComponent implements OnInit {
   }
 
   getCurrentPage(page:string): 'add'|'update'|'list' {
-    if (page === '/income/add') return 'add';
-    if (page.startsWith('/income/update/')) return 'update';
+    if (page === '/capital/add') return 'add';
+    if (page.startsWith('/capital/update/')) return 'update';
     return 'list';
   }
 

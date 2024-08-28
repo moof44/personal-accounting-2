@@ -7,7 +7,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MediaMatcher} from '@angular/cdk/layout';
 import { RouterModule } from '@angular/router';
-import { NavigationMenu } from '@models/global.model';
+import { NavigationMenu } from '@app/models/global.model';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 
@@ -46,6 +46,14 @@ export class AuthorizedLayoutComponent implements OnInit {
     {
       label: 'Expense',
       link: '/expense'
+    },
+    {
+      label: 'Capital',
+      link: '/capital'
+    },
+    {
+      label: 'Purchase',
+      link: '/purchase'
     },
     {
       label: 'About',

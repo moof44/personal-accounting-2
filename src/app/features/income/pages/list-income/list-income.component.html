@@ -1,4 +1,4 @@
-
+<!-- 
 <mat-accordion class="search-expansion">
     <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -35,9 +35,7 @@
                     </button>
                 </div>
             </mat-form-field>
-        </ng-template>
-        
-            <!-- <button mat-raised-button (click)="clearDatePicker()">Clear</button> -->
+        </ng-template>        
     </mat-expansion-panel> 
 </mat-accordion>
 
@@ -45,35 +43,33 @@
     mat-table [dataSource]="dataSource()" class="mat-elevation-z8"
     matSort="id"
 >
-    <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-    <!-- date Column -->
     <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef class="center-text"> Date</th>
         <td mat-cell *matCellDef="let element"> {{element.date | date: 'M/d/y'}} </td>
     </ng-container>
 
-    <!-- incomeSource Column -->
     <ng-container matColumnDef="incomeSource">
         <th mat-header-cell *matHeaderCellDef class="center-text"> Source </th>
         <td mat-cell *matCellDef="let element"> {{element.incomeSource}} </td>
     </ng-container>
-
-    <!-- Position amount -->
+    
     <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef class="center-text"> Amount </th>
         <td mat-cell *matCellDef="let element"> {{element.amount | number:'.2-2'}} </td>
     </ng-container>
-
-    <!-- Name Column -->
+    
     <ng-container matColumnDef="remarks">
         <th mat-header-cell *matHeaderCellDef class="center-text"> Remarks </th>
         <td mat-cell *matCellDef="let element"> {{element.remarks}} </td>
     </ng-container>
-
+    
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="onRowClick(row.id)"></tr>
+    <tr 
+        mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (click)="rowClick(row.id)"
+        class="q-pointer row-highlight"
+        [matTooltip]="row.remarks"
+        matTooltipPosition="above">
+    </tr>
 </table>
 <mat-paginator 
     [pageSizeOptions]="pageSizeOptions()"
@@ -82,4 +78,18 @@
     aria-label="Select page of periodic elements"
     [ngClass]="mobileQuery.matches? 'mobile': ''"
 >
-</mat-paginator>
+</mat-paginator> -->
+@defer {
+    <shared-common-table
+        [dataSource]="dataSource()"
+        [displayedColumns]="displayedColumns()"
+        [dataCount] = "store.count()"
+        [rowClick]="rowClick"
+        [screensize]="mobileQuery.matches? 'mobile': 'desktop'"
+        [filter]="filter()"
+        [tooltipColumn]="tooltipColumn()"
+        (setFilter)="setFilter($event)"
+        (pagination)="onPageChange($event)"
+    >
+    </shared-common-table>
+}

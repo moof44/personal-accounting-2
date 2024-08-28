@@ -1,4 +1,4 @@
-import { NavigationMenu } from "@models/global.model";
+import { NavigationMenu } from "@app/models/income.model";
 
 const navigation: NavigationMenu[] = [
     {

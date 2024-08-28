@@ -20,8 +20,7 @@
 
 import { computed, inject, Signal } from '@angular/core';
 import { TableSettings } from '@app/models/global.model';
-import { Income } from '@app/models/income.model';
-import { IncomeService } from '@app/services/income.service';
+import { Capital } from '@app/models/capital.model';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -36,11 +35,12 @@ import {
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { from, map, pipe, switchMap, take } from 'rxjs';
+import { CapitalService } from '@app/services/capital.service';
 
-function withIncomeSettings() {
+function withCapitalSettings() {
   return signalStoreFeature(
     withState<TableSettings>({
-      title: 'Income',
+      title: 'Capital',
       filter: { 
         query: '', 
         order: 'asc', 
@@ -54,12 +54,12 @@ function withIncomeSettings() {
 }
 
 function withFilterEntities(
-  entities: Signal<Income[]>, 
+  entities: Signal<Capital[]>, 
   filter:any,
   withPagination=true,
 ) {
   const allEntities = entities().filter(v=>{
-    const search = v.incomeSource + v.remarks;
+    const search = v.description + v.remarks;
     const isQuery = search.toLowerCase().includes(filter.query().toLowerCase())
     let isDateRange = true;
 
@@ -69,11 +69,12 @@ function withFilterEntities(
       return normalized;
     };
 
+    // Assuming Capital model has a 'date' property, adjust accordingly if not
     if (filter.startDate() && filter.endDate()) {
       const startDate = normalizeDate(filter.startDate()!);
       const endDate = normalizeDate(filter.endDate()!);
-      const incomeDate = normalizeDate(v.date as Date);
-      isDateRange = incomeDate >= startDate && incomeDate <= endDate;
+      const capitalDate = normalizeDate(v.date as Date); 
+      isDateRange = capitalDate >= startDate && capitalDate <= endDate;
     };
 
     return isQuery && isDateRange;
@@ -87,9 +88,9 @@ function withFilterEntities(
   return allEntities;
 }
 
-export const IncomeStore = signalStore(
-  withEntities<Income>(),
-  withIncomeSettings(),
+export const CapitalStore = signalStore(
+  withEntities<Capital>(),
+  withCapitalSettings(),
   withHooks({
     onInit(store) {
       //watchState(store, (state) => console.log);
@@ -102,17 +103,17 @@ export const IncomeStore = signalStore(
       return withFilterEntities(entities, filter);
     }),
   })),
-  withMethods((store, incomeService = inject(IncomeService)) => ({
-    loadIncome: rxMethod<any>(
+  withMethods((store, capitalService = inject(CapitalService)) => ({ // Inject CapitalService
+    loadCapital: rxMethod<any>( 
       pipe(
         switchMap(() => {
-          return incomeService.incomeCollectionData$.pipe(
-            map((incomes: any[]) =>
-              incomes.map((v) => ({ ...v, date: v.date.toDate() }))
+          return capitalService.capitalCollectionData$.pipe( // Assuming capitalCollectionData$ exists
+            map((capitals: any[]) =>
+              capitals.map((v) => ({ ...v, date: v.date.toDate() })) // Adjust if 'date' is not a property
             ),
             tapResponse({
-              next: (incomes) => {
-                patchState(store, setAllEntities(incomes as any[]));
+              next: (capitals) => {
+                patchState(store, setAllEntities(capitals as any[]));
               },
               error: () => console.error,
               complete: () => {},
@@ -121,14 +122,14 @@ export const IncomeStore = signalStore(
         })
       )
     ),
-    addIncome: (data: Partial<Income>) => {
-      return from(incomeService.save(data)).pipe(take(1));
+    addCapital: (data: Partial<Capital>) => {
+      return from(capitalService.save(data)).pipe(take(1)); // Assuming 'save' method in CapitalService
     },
-    updateIncome: (id: string, data: Partial<Income>) => {
-      return from(incomeService.update(id, data)).pipe(take(1));
+    updateCapital: (id: string, data: Partial<Capital>) => {
+      return from(capitalService.update(id, data)).pipe(take(1)); // Assuming 'update' method
     },
-    deleteIncome: (id: string) => {
-      return from(incomeService.delete(id)).pipe(take(1));
+    deleteCapital: (id: string) => {
+      return from(capitalService.delete(id)).pipe(take(1)); // Assuming 'delete' method
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator

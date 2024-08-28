@@ -19,10 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { IncomeStore } from '@app/shared/store/income.store';
+import { CapitalStore } from '@app/shared/store/capital.store';
 
 @Component({
-  selector: 'app-add-update-income',
+  selector: 'app-add-update-capital',
   standalone: true,
   imports: [
     CommonModule,
@@ -35,62 +35,63 @@ import { IncomeStore } from '@app/shared/store/income.store';
     MatCardModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './add-update-income.component.html',
-  styleUrl: './add-update-income.component.scss',
+  templateUrl: './add-update-capital.component.html',
+  styleUrl: './add-update-capital.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddUpdateIncomeComponent implements OnInit {
+export class AddUpdateCapitalComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _router = inject(Router);
-  private readonly _incomeStore = inject(IncomeStore);
+  private readonly _capitalStore = inject(CapitalStore);
 
   formGroup = this._fb.group({
     id: '',
     date: [new Date(), Validators.required],
-    incomeSource: ["Aga's Detailing", Validators.required],
+    description: ['Meralo', Validators.required], // Consider changing the default value
     amount: [1000, Validators.required],
     remarks: '',
   });
 
   @Input()
   set id(id: string) {
-    this.incomeId = id;
-    const income = this._incomeStore.entities().find((v) => v.id === id)!;
-    this.formGroup.patchValue(income as any);
+    this.capitalId = id;
+    const capital = this._capitalStore.entities().find((v) => v.id === id)!;
+    this.formGroup.patchValue(capital as any);
   }
 
-  incomeId = '';
+  capitalId = '';
 
   ngOnInit(): void {}
 
   goBack() {
-    this._router.navigate(['/income']);
+    this._router.navigate(['/capital']);
   }
 
   onSubmit() {
     if (this.formGroup.valid) {
-      if (this.incomeId) {
-        this._incomeStore
-          .updateIncome(this.incomeId, this.formGroup.value as any)
+      if (this.capitalId) {
+        this._capitalStore
+          .updateCapital(this.capitalId, this.formGroup.value as any)
           .subscribe((v) => {
             this.goBack();
           });
       } else {
-        this._incomeStore
-          .addIncome(this.formGroup.value as any)
+        this._capitalStore
+          .addCapital(this.formGroup.value as any)
           .subscribe((v) => {
             if (v) this.goBack();
           });
       }
     } else {
+      // Handle form errors if needed
     }
   }
 
-  deleteIncome() {
-    if (this.incomeId) {
-      this._incomeStore.deleteIncome(this.incomeId).subscribe((v) => {
+  deleteCapital() {
+    if (this.capitalId) {
+      this._capitalStore.deleteCapital(this.capitalId).subscribe((v) => {
         this.goBack();
-      })
+      });
     }
   }
 }
