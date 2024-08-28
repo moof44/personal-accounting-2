@@ -23,17 +23,17 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { Expense } from '@app/models/expense.model';
+import { Capital } from '@app/models/capital.model';
 import {
   Pagination,
   TableFilter
 } from '@app/models/global.model';
 import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
-import { ExpenseStore } from '@app/shared/store/expense.store';
+import { CapitalStore } from '@app/shared/store/capital.store';
 
 @Component({
-  selector: 'app-list-expense',
+  selector: 'app-list-capital',
   standalone: true,
   imports: [
     CommonModule,
@@ -53,16 +53,17 @@ import { ExpenseStore } from '@app/shared/store/expense.store';
     MatTooltipModule,
     CommonTableComponent,
   ],
-  templateUrl: './list-expense.component.html',
-  styleUrl: './list-expense.component.scss',
+  templateUrl: './list-capital.component.html',
+  styleUrl: './list-capital.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListExpenseComponent implements OnInit {
-  readonly store = inject(ExpenseStore);
+export class ListCapitalComponent implements OnInit {
+  readonly store = inject(CapitalStore);
   private _router = inject(Router);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // Update columns based on Capital model
   #defaultColumns = [
     { column: 'date', header: 'Date', type: 'date' },
     { column: 'description', header: 'Description' },
@@ -73,7 +74,7 @@ export class ListExpenseComponent implements OnInit {
   displayedColumns = signal(this.#defaultColumns);
   itemsPerPage = signal(5);
   pageSizeOptions = signal([5, 10, 25]);
-  dataSource: Signal<Expense[]> = signal([]);
+  dataSource: Signal<Capital[]> = signal([]);
   filter = computed(() => this.store.filter());
   tooltipColumn = signal('remarks');
 
@@ -106,7 +107,7 @@ export class ListExpenseComponent implements OnInit {
   ngOnInit(): void {}
   ngAfterViewInit(): void {}
 
-  rowClick = (id: number) => this._router.navigate(['/expense/update', id]);
+  rowClick = (id: number) => this._router.navigate(['/capital/update', id]);
 
   onPageChange({ current, pageSize }: Pagination) {
     this.store.setCurrentPage(current);

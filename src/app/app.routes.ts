@@ -83,6 +83,44 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'capital',
+    loadComponent: () =>
+      import('./features/capital/capital.component').then(
+        (m) => m.CapitalComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/capital/pages/list-capital/list-capital.component'
+          ).then((m) => m.ListCapitalComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path)) 
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/capital/pages/add-update-capital/add-update-capital.component'
+          ).then((m) => m.AddUpdateCapitalComponent),
+      },
+    ],
+  },
+  {
     path: 'about',
     loadComponent: () =>
       import('./features/about/about.component').then((m) => m.AboutComponent),
