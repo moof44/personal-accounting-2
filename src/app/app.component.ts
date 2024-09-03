@@ -8,6 +8,7 @@ import { IncomeStore } from '@shared/store/income.store';
 import { ExpenseStore } from './shared/store/expense.store';
 import { CapitalStore } from './shared/store/capital.store';
 import { PurchaseStore } from './shared/store/purchase.store';
+import { SummaryStore } from './shared/store/summary.store';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { PurchaseStore } from './shared/store/purchase.store';
     ExpenseStore,
     CapitalStore,
     PurchaseStore, 
+    SummaryStore,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -34,6 +36,7 @@ export class AppComponent implements OnInit{
   readonly expenseStore = inject(ExpenseStore);
   readonly capitalStore = inject(CapitalStore);
   readonly purchaseStore = inject(PurchaseStore);
+  readonly summaryStore = inject(SummaryStore);
 
   title = 'personal-accounting-2';
 
@@ -49,5 +52,6 @@ export class AppComponent implements OnInit{
     this.expenseStore.loadExpense('');
     this.capitalStore.loadCapital('');
     this.purchaseStore.loadPurchase('');
+    this.summaryStore.loadSummary('');
   }
 }
