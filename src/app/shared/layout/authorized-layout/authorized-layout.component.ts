@@ -33,7 +33,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
 })
 export class AuthorizedLayoutComponent implements OnInit {
   mobileQuery!: MediaQueryList;
-  fillerNav = ['Home', 'Income', 'Expense'];
   fillerNav2: NavigationMenu[] = [
     {
       label: 'Home',

@@ -28,9 +28,7 @@ export interface NavigationMenu {
     value: any;
   }
   
-  
 export interface TableSettings {
     title: string;
     filter: FilterSettings;
   }
-  
