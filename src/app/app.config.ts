@@ -40,6 +40,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideStore(),
     provideEffects(),
-    provideRouterStore(), provideAnimationsAsync(),
+    provideRouterStore(), provideAnimationsAsync(), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
   ],
 };
