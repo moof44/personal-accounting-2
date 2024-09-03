@@ -92,9 +92,7 @@ export const CapitalStore = signalStore(
   withEntities<Capital>(),
   withCapitalSettings(),
   withHooks({
-    onInit(store) {
-      //watchState(store, (state) => console.log);
-    },
+    onInit(store) {},
     onDestroy(store) {},
   }),
   withComputed(({ entities, filter }) => ({

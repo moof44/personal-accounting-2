@@ -68,7 +68,6 @@ export const SummaryStore = signalStore(
           return summaryService.summaryCollectionData$.pipe(
             tapResponse({
               next: (summary: Summary[]) => {
-                console.log('summary', summary)
                 patchState(store, summary[0]);
               },
               error: () => console.error,

@@ -91,9 +91,7 @@ export const IncomeStore = signalStore(
   withEntities<Income>(),
   withIncomeSettings(),
   withHooks({
-    onInit(store) {
-      //watchState(store, (state) => console.log);
-    },
+    onInit(store) {},
     onDestroy(store) {},
   }),
   withComputed(({ entities, filter }) => ({
