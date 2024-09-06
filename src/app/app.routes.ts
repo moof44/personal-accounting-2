@@ -159,8 +159,56 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'liability', // New route for Liability
+    loadComponent: () =>
+      import('./features/liability/liability.component').then(
+        (m) => m.LiabilityComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/liability/pages/list-liability/list-liability.component'
+          ).then((m) => m.ListLiabilityComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path))
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/liability/pages/add-update-liability/add-update-liability.component'
+          ).then((m) => m.AddUpdateLiabilityComponent),
+      },
+    ],
+  },
+  {
     path: 'about',
     loadComponent: () =>
       import('./features/about/about.component').then((m) => m.AboutComponent),
+  },
+  {
+    path:'page-not-found',
+    loadComponent: () =>
+      import('./features/page-not-found/page-not-found.component').then((m) => m.PageNotFoundComponent),
+  },
+  { 
+    path: '**',
+    redirectTo: 'page-not-found',
+    pathMatch: 'full'
   },
 ];

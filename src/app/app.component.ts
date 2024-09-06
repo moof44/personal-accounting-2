@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet, RoutesRecognized } from '@angular/router';
 import { AuthorizedLayoutComponent } from '@shared/layout/authorized-layout/authorized-layout.component';
 import { pageComponentAnimation } from '@shared/animations/general-animations';
 import { ShortcutCommandComponent } from '@shared/components/shortcut-command/shortcut-command.component';
@@ -9,21 +9,27 @@ import { ExpenseStore } from './shared/store/expense.store';
 import { CapitalStore } from './shared/store/capital.store';
 import { PurchaseStore } from './shared/store/purchase.store';
 import { SummaryStore } from './shared/store/summary.store';
+import { PageNotFoundComponent } from "./features/page-not-found/page-not-found.component";
+import { CommonModule } from '@angular/common';
+import { LiabilityStore } from './shared/store/liability.store';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     AuthorizedLayoutComponent,
     ShortcutCommandComponent,
-  ],
+    PageNotFoundComponent,
+],
   providers: [
     IncomeStore,
     ExpenseStore,
     CapitalStore,
     PurchaseStore, 
     SummaryStore,
+    LiabilityStore,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -37,10 +43,20 @@ export class AppComponent implements OnInit{
   readonly capitalStore = inject(CapitalStore);
   readonly purchaseStore = inject(PurchaseStore);
   readonly summaryStore = inject(SummaryStore);
+  readonly liabilityStore = inject(LiabilityStore);
+
 
   title = 'personal-accounting-2';
+  isNotFound = true;
 
-  constructor(private _firestore: Firestore){
+  constructor(
+    private _router: Router,
+  ){
+    this._router.events.subscribe(event => {
+      if (event instanceof RoutesRecognized) {
+        this.isNotFound =  event.urlAfterRedirects === '/page-not-found'; 
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -53,5 +69,6 @@ export class AppComponent implements OnInit{
     this.capitalStore.loadCapital('');
     this.purchaseStore.loadPurchase('');
     this.summaryStore.loadSummary('');
+    this.liabilityStore.loadLiability('');
   }
 }

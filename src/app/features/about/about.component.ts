@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, type OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
@@ -9,6 +9,7 @@ import { pageComponentAnimation } from '@app/shared/animations/general-animation
   imports: [
     CommonModule,
     MatCardModule,
+    NgOptimizedImage,
   ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss',
