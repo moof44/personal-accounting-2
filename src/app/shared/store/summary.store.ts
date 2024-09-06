@@ -31,7 +31,7 @@ import {
   withState
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { map, Observable, pipe, switchMap } from 'rxjs';
+import { pipe, switchMap } from 'rxjs';
 
 export const SummaryStore = signalStore(
   withState<Summary>({
@@ -43,9 +43,7 @@ export const SummaryStore = signalStore(
     totalCapital: 0,
   }),
   withHooks({
-    onInit(store) {
-      //watchState(store, (state) => console.log);
-    },
+    onInit(store) {},
     onDestroy(store) {},
   }),
   withComputed((store)=>({

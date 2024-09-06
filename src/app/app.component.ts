@@ -11,6 +11,7 @@ import { PurchaseStore } from './shared/store/purchase.store';
 import { SummaryStore } from './shared/store/summary.store';
 import { PageNotFoundComponent } from "./features/page-not-found/page-not-found.component";
 import { CommonModule } from '@angular/common';
+import { LiabilityStore } from './shared/store/liability.store';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +29,7 @@ import { CommonModule } from '@angular/common';
     CapitalStore,
     PurchaseStore, 
     SummaryStore,
+    LiabilityStore,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -41,6 +43,8 @@ export class AppComponent implements OnInit{
   readonly capitalStore = inject(CapitalStore);
   readonly purchaseStore = inject(PurchaseStore);
   readonly summaryStore = inject(SummaryStore);
+  readonly liabilityStore = inject(LiabilityStore);
+
 
   title = 'personal-accounting-2';
   isNotFound = true;
@@ -48,18 +52,14 @@ export class AppComponent implements OnInit{
   constructor(
     private _router: Router,
   ){
-    console.log('isNotfound', this.isNotFound);
     this._router.events.subscribe(event => {
-      console.log(event);
       if (event instanceof RoutesRecognized) {
         this.isNotFound =  event.urlAfterRedirects === '/page-not-found'; 
-        console.log('isNotfound', this.isNotFound);
       }
     });
   }
 
   ngOnInit(): void {
-    console.log('isNotfound', this.isNotFound);
     this.#loadStores();
   }
 
@@ -69,5 +69,6 @@ export class AppComponent implements OnInit{
     this.capitalStore.loadCapital('');
     this.purchaseStore.loadPurchase('');
     this.summaryStore.loadSummary('');
+    this.liabilityStore.loadLiability('');
   }
 }

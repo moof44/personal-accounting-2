@@ -47,6 +47,10 @@ export class AuthorizedLayoutComponent implements OnInit {
       link: '/expense'
     },
     {
+      label: 'Liability',
+      link: '/liability'
+    },
+    {
       label: 'Capital',
       link: '/capital'
     },
