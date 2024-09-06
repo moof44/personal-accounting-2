@@ -1,5 +1,10 @@
+<ng-container *ngIf="!isNotFound; else notFound">
+  <authorized-layout>
+    <router-outlet @routeAnimations></router-outlet>
+  </authorized-layout>
+  <shared-shortcut-command></shared-shortcut-command>
+</ng-container>
 
-<authorized-layout>
-  <router-outlet @routeAnimations />
-</authorized-layout>
-<shared-shortcut-command></shared-shortcut-command>
+<ng-template #notFound>
+  <page-not-found></page-not-found>
+</ng-template>

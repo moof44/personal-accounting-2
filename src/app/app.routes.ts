@@ -163,4 +163,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/about/about.component').then((m) => m.AboutComponent),
   },
+  {
+    path:'page-not-found',
+    loadComponent: () =>
+      import('./features/page-not-found/page-not-found.component').then((m) => m.PageNotFoundComponent),
+  },
+  { 
+    path: '**',
+    redirectTo: 'page-not-found',
+    pathMatch: 'full'
+  },
 ];
