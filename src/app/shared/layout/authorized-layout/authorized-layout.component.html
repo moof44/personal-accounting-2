@@ -1,37 +1,50 @@
 <mat-toolbar>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon"
-        (click)="snav.toggle()"
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span>Personal Accounting</span>
-    <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-      <mat-icon>favorite</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-      <mat-icon>share</mat-icon>
-    </button>
-</mat-toolbar> 
-<mat-sidenav-container 
-    class="example-sidenav-container"
-    [style.marginTop.px]="mobileQuery.matches ? 16 : 0"
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+    (click)="snav.toggle()"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Personal Accounting</span>
+  <span class="example-spacer"></span>
+  <button
+    mat-icon-button
+    class="example-icon favorite-icon"
+    aria-label="Example icon-button with heart icon"
+  >
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with share icon"
+  >
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container
+  class="example-sidenav-container"
+  [style.marginTop.px]="mobileQuery.matches ? 16 : 0"
 >
-    <mat-sidenav #snav mode="over"
-                [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"
-    >
+  <mat-sidenav
+    #snav
+    mode="over"
+    [fixedInViewport]="mobileQuery.matches"
+    fixedTopGap="56"
+  >
     <!-- [mode]="mobileQuery.matches ? 'over' : 'side'" -->
-        <mat-nav-list>
-            @for (nav of fillerNav2; track nav) {
-                <a 
-                    mat-list-item routerLink="{{nav.link}}"
-                    (click)="snav.close()"
-                >{{nav.label}}</a>
-            }
-        </mat-nav-list>
-    </mat-sidenav>
+    <mat-nav-list>
+      @for (nav of fillerNav2; track nav) {
+      <a mat-list-item routerLink="{{ nav.link }}" (click)="snav.close()">{{
+        nav.label
+      }}</a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
 
-    <mat-sidenav-content class="content" @routeAnimations>
-        <ng-content></ng-content>
-    </mat-sidenav-content>
+  <mat-sidenav-content class="content">
+    <ng-content></ng-content>
+  </mat-sidenav-content>
 </mat-sidenav-container>

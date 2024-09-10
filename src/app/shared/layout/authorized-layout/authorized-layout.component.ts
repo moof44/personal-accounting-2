@@ -21,14 +21,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
   ],
   templateUrl: './authorized-layout.component.html',
   styleUrl: './authorized-layout.component.scss',
-  animations: [
-    trigger('routeAnimations', [
-      transition('* <=> *', [
-        style({ opacity: 0 }),
-        animate('500ms', style({ opacity: 1 }))
-      ])
-    ])
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorizedLayoutComponent implements OnInit {
