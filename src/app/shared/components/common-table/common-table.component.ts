@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, input, output, signal, ViewChild, type OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,8 +12,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DisplayedColumns, FilterSettings, TableFilter } from '@app/models/global.model';
-import { Income } from '@app/models/income.model';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
+import { AutoFormatPipe } from '@app/shared/pipe/auto-format.pipe';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
   selector: 'shared-common-table',
@@ -34,6 +34,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     MatPaginator, 
     MatPaginatorModule,
     MatTooltipModule,
+    AutoFormatPipe,
+  ],
+  providers: [
+    DatePipe,
   ],
   templateUrl: './common-table.component.html',
   styleUrl: './common-table.component.scss',
