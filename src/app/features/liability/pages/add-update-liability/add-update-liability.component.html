@@ -33,12 +33,12 @@
       </mat-form-field>
 
       <div class="liability-input-form__actions">
-        <button mat-button type="button" (click)="deleteLiability()" color="tertiary">Delete</button>
+        <button mat-button type="button" color="accent">Reduce</button>
         <button mat-button type="button" (click)="deleteLiability()" color="warn">Delete</button>
       </div>
   
       <div class="liability-input-form__actions">
-          <button mat-button type="button"(click)="goBack()">Cancel</button>
+          <button mat-button type="button"(click)="goBack()" color="accent">Cancel</button>
           <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup.valid">Submit</button>
       </div>
     </div>
