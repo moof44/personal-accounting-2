@@ -19,14 +19,23 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
+import { LoadingService } from '@app/core/loading/loading.service';
 import { Expense } from '@app/models/expense.model';
 import { TableSettings } from '@app/models/global.model';
 import { ExpenseService } from '@app/services/expense.service';
 import { tapResponse } from '@ngrx/operators';
-import { patchState, signalStore, signalStoreFeature, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  signalStoreFeature,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { from, map, pipe, switchMap, take } from 'rxjs';
+import { from, map, pipe, switchMap, take, tap, finalize  } from 'rxjs';
 
 function withExpenseSettings() {
   return signalStoreFeature(
@@ -79,19 +88,24 @@ function withFilterEntities(
 }
 
 export const ExpenseStore = signalStore(
-    withEntities<Expense>(),
-    withExpenseSettings(),
-    withHooks({
-      onInit(store) {},
-      onDestroy(store) {},
+  withEntities<Expense>(),
+  withExpenseSettings(),
+  withHooks({
+    onInit(store) {},
+    onDestroy(store) {},
+  }),
+  withComputed(({ entities, filter }) => ({
+    count: computed(() => withFilterEntities(entities, filter, false).length),
+    filteredEntities: computed(() => {
+      return withFilterEntities(entities, filter);
     }),
-    withComputed(({ entities, filter }) => ({
-      count: computed(() => withFilterEntities(entities, filter, false).length),
-      filteredEntities: computed(() => {
-        return withFilterEntities(entities, filter);
-      }),
-    })),
-    withMethods((store, expenseService = inject(ExpenseService)) => ({
+  })),
+  withMethods(
+    (
+      store,
+      expenseService = inject(ExpenseService),
+      loadingService = inject(LoadingService)
+    ) => ({
       loadExpense: rxMethod<any>(
         pipe(
           switchMap(() => {
@@ -105,19 +119,19 @@ export const ExpenseStore = signalStore(
                 },
                 error: () => console.error,
                 complete: () => {},
-              })
+              }),
             );
           })
         )
       ),
       addExpense: (data: Partial<Expense>) => {
-        return from(expenseService.save(data)).pipe(take(1));
+        return expenseService.save(data);
       },
       updateExpense: (id: string, data: Partial<Expense>) => {
-        return from(expenseService.update(id, data)).pipe(take(1));
+        return expenseService.update(id, data); 
       },
       deleteExpense: (id: string) => {
-        return from(expenseService.delete(id)).pipe(take(1));
+        return expenseService.delete(id); 
       },
       setQueryFilter: (query: string) => {
         patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator
@@ -126,13 +140,16 @@ export const ExpenseStore = signalStore(
         patchState(store, { filter: { ...store.filter(), order } });
       },
       setDateRangeFilter: (startDate: Date | null, endDate: Date | null) => {
-        patchState(store, { filter: { ...store.filter(), startDate, endDate } });
+        patchState(store, {
+          filter: { ...store.filter(), startDate, endDate },
+        });
       },
       setCurrentPage: (currentPage: number) => {
         patchState(store, { filter: { ...store.filter(), currentPage } });
       },
       setItemsPerPage: (itemsPerPage: number) => {
         patchState(store, { filter: { ...store.filter(), itemsPerPage } });
-      }
-    }))
-  );
+      },
+    })
+  )
+);

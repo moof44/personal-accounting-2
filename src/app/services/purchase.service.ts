@@ -1,42 +1,108 @@
-import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentReference, Firestore, updateDoc } from '@angular/fire/firestore';
+import { inject, Injectable } from '@angular/core';
+import {
+  addDoc,
+  collection,
+  collectionData,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  DocumentReference,
+  Firestore,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { Purchase } from '@app/models/purchase.model';
-import { Observable } from 'rxjs';
+import { finalize, from, Observable } from 'rxjs';
+import { LoadingService } from '@app/core/loading/loading.service';
+import { NotificationService } from '@app/core/notification/notification.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
+/**
+ * Service for managing purchases with Firestore.
+ */
 export class PurchaseService {
-  private _purchaseCollectionName = 'purchase'; // Assuming 'purchase' is your collection name
+  private _purchaseCollectionName = 'purchase';
   private _purchaseCollection!: CollectionReference;
+  #loadingService = inject(LoadingService);
+  #notificationService = inject(NotificationService);
 
-  readonly purchaseCollectionData$:any;
-  
+  /**
+   * Observable stream of purchase data from Firestore.
+   */
+  readonly purchaseCollectionData$: Observable<Purchase[]>;
 
-  constructor(private _firestore: Firestore) { 
-    this._purchaseCollection = collection(this._firestore, this._purchaseCollectionName)
-    this.purchaseCollectionData$ = (collectionData(this._purchaseCollection, {idField: 'id'}) as Observable<Purchase[]>)
+  /**
+   * Constructor for PurchaseService.
+   * @param _firestore - Firestore instance.
+   */
+  constructor(private _firestore: Firestore) {
+    this._purchaseCollection = collection(
+      this._firestore,
+      this._purchaseCollectionName
+    );
+    this.purchaseCollectionData$ = collectionData(
+      this._purchaseCollection,
+      {
+        idField: 'id',
+      }
+    ) as Observable<Purchase[]>;
   }
 
-  save(data:Partial<Purchase>){
-    //if(!data) return;
-    return addDoc(this._purchaseCollection, data).then((documentReference: DocumentReference) => {
-      return documentReference;
-    }).catch(e=>{return null})
+  /**
+   * Saves a new purchase entry to Firestore.
+   * @param data - Partial purchase data to save.
+   * @returns An observable that emits the DocumentReference of the saved purchase entry.
+   */
+  save(data: Partial<Purchase>) {
+    this.#loadingService.setLoading(true, 'Saving...');
+    return from(
+      addDoc(this._purchaseCollection, data)
+        .then((documentReference: DocumentReference) => {
+          return documentReference;
+        })
+        .catch((e) => {
+          this.#notificationService.showNotification('create', 'error');
+        })
+    ).pipe(this.#finalize());
   }
 
-  update(id: string, data: Partial<Purchase>){ // Add id parameter
+  /**
+   * Updates an existing purchase entry in Firestore.
+   * @param id - ID of the purchase entry to update.
+   * @param data - Partial purchase data to update.
+   * @returns An observable that emits void on successful update.
+   */
+  update(id: string, data: Partial<Purchase>) {
+    this.#loadingService.setLoading(true, 'Updating...');
     const docRef = doc(this._firestore, this._purchaseCollectionName, id);
-    return updateDoc(docRef, data)
-      .then(e=>{return e})
-      .catch(e=>{return null}); // Use the DocumentReference in updateDoc
+    return from(
+      updateDoc(docRef, data).catch((e) => {
+        this.#notificationService.showNotification('update', 'error');
+      })
+    ).pipe(this.#finalize());
   }
 
-  delete(id:string){
+  /**
+   * Deletes a purchase entry from Firestore.
+   * @param id - ID of the purchase entry to delete.
+   * @returns An observable that emits void on successful deletion.
+   */
+  delete(id: string) {
+    this.#loadingService.setLoading(true, 'Deleting...');
     const docRef = doc(this._firestore, this._purchaseCollectionName, id);
-    return deleteDoc(docRef)
-      .then(e=>{return e})
-      .catch(e=>{return null}); // Use the DocumentReference in updateDoc
+    return from(
+      deleteDoc(docRef).catch((e) => {
+        this.#notificationService.showNotification('delete', 'error');
+      })
+    ).pipe(this.#finalize());
   }
 
+  /**
+   * Finalizes the observable stream by resetting the loading state.
+   * @returns An observable with finalize logic applied.
+   */
+  #finalize() {
+    return finalize(() => this.#loadingService.setLoading(false));
+  }
 }

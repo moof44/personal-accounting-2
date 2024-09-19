@@ -27,11 +27,10 @@ import {
   patchState,
   signalStore,
   signalStoreFeature,
-  watchState,
   withComputed,
   withHooks,
   withMethods,
-  withState,
+  withState
 } from '@ngrx/signals';
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -120,13 +119,13 @@ export const IncomeStore = signalStore(
       )
     ),
     addIncome: (data: Partial<Income>) => {
-      return from(incomeService.save(data)).pipe(take(1));
+      return incomeService.save(data); 
     },
     updateIncome: (id: string, data: Partial<Income>) => {
-      return from(incomeService.update(id, data)).pipe(take(1));
+      return incomeService.update(id, data); 
     },
     deleteIncome: (id: string) => {
-      return from(incomeService.delete(id)).pipe(take(1));
+      return incomeService.delete(id);
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator

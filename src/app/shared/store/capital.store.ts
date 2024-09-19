@@ -121,13 +121,13 @@ export const CapitalStore = signalStore(
       )
     ),
     addCapital: (data: Partial<Capital>) => {
-      return from(capitalService.save(data)).pipe(take(1)); // Assuming 'save' method in CapitalService
+      return capitalService.save(data); // Assuming 'save' method in CapitalService
     },
     updateCapital: (id: string, data: Partial<Capital>) => {
-      return from(capitalService.update(id, data)).pipe(take(1)); // Assuming 'update' method
+      return capitalService.update(id, data); // Assuming 'update' method
     },
     deleteCapital: (id: string) => {
-      return from(capitalService.delete(id)).pipe(take(1)); // Assuming 'delete' method
+      return capitalService.delete(id); // Assuming 'delete' method
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator

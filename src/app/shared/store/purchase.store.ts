@@ -101,13 +101,13 @@ export const PurchaseStore = signalStore(
       )
     ),
     addPurchase: (data: Partial<Purchase>) => {
-      return from(purchaseService.save(data)).pipe(take(1)); 
+      return purchaseService.save(data); 
     },
     updatePurchase: (id: string, data: Partial<Purchase>) => {
-      return from(purchaseService.update(id, data)).pipe(take(1)); 
+      return purchaseService.update(id, data); 
     },
     deletePurchase: (id: string) => {
-      return from(purchaseService.delete(id)).pipe(take(1));
+      return purchaseService.delete(id);
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); 
