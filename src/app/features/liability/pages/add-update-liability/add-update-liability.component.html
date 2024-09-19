@@ -3,7 +3,7 @@
   
       <mat-form-field class="liability-input-form__input">
         <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="datepicker" formControlName="date" />
+        <input matInput [matDatepicker]="datepicker" formControlName="date" [disableOnLoading]="true"/>
         <mat-hint>MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
@@ -19,17 +19,17 @@
   
       <mat-form-field class="liability-input-form__input">
         <mat-label>Description</mat-label>
-        <input matInput formControlName="description" />
+        <input matInput formControlName="description" [disableOnLoading]="true"/>
       </mat-form-field>
   
       <mat-form-field class="liability-input-form__input">
         <mat-label>Amount</mat-label>
-        <input matInput type="number" formControlName="amount" />
+        <input matInput type="number" formControlName="amount" [disableOnLoading]="true"/>
       </mat-form-field>
   
       <mat-form-field class="liability-input-form__input">
         <mat-label>Remarks</mat-label>
-        <textarea matInput formControlName="remarks"></textarea>
+        <textarea matInput formControlName="remarks" [disableOnLoading]="true"></textarea>
       </mat-form-field>
 
       <div class="liability-input-form__actions">

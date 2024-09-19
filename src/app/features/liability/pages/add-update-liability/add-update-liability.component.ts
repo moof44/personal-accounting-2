@@ -25,9 +25,11 @@ import { PayLiabilityOutputData } from '@app/shared/dialog/dialog.model';
 import { PayLiabilityComponent } from '@app/shared/dialog/pay-liability/pay-liability.component';
 import { ExpenseStore } from '@app/shared/store/expense.store';
 import { LiabilityStore } from '@app/shared/store/liability.store'; // Import LiabilityStore
-import { catchError, finalize } from 'rxjs';
+import { catchError, delay, finalize } from 'rxjs';
 import { LiabilityFeatureService } from '../../liability-feature.service';
 import { LoadingService } from '@app/core/loading/loading.service';
+import { DisableDirective } from '@app/core/loading/disable.directive';
+
 
 @Component({
   selector: 'app-add-update-liability', // Update selector
@@ -42,6 +44,7 @@ import { LoadingService } from '@app/core/loading/loading.service';
     MatDatepickerModule,
     MatCardModule,
     ReactiveFormsModule,
+    DisableDirective,
   ],
   templateUrl: './add-update-liability.component.html', // Update templateUrl
   styleUrl: './add-update-liability.component.scss', // Update styleUrl

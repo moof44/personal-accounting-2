@@ -6,16 +6,16 @@ import { LoadingService } from './loading.service';
   standalone: true,
 })
 export class DisableDirective {
-  @Input() appDisableOnLoading = true;
-  loadingService = inject(LoadingService);
+  @Input() disableOnLoading = true;
+  #isLoading = inject(LoadingService).isLoading;
 
-  constructor(private el: ElementRef) { }
-
-  ngOnInit() {
-    if (this.appDisableOnLoading) {
-      effect(() => {
-        this.el.nativeElement.disabled = this.loadingService.isLoading();
-      });
-    }
+  constructor(private el: ElementRef) {
+    effect(() => {
+      if (this.disableOnLoading) {
+        this.el.nativeElement.disabled = this.#isLoading();
+      }
+    });
   }
+
+  ngOnInit() {}
 }
