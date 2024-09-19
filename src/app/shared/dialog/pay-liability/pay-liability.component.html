@@ -1,0 +1,28 @@
+<h4 mat-dialog-title>
+  Pay Liability - {{ data.item }} ({{ data.total | number : "1.2-2" }})
+</h4>
+<form [formGroup]="formGroup">
+  <mat-dialog-content class="input-items">
+    <mat-form-field class="input-items__amount">
+      <mat-label>Amount</mat-label>
+      <input type="number" matInput formControlName="amount" />
+    </mat-form-field>
+
+    <mat-label class="input-items__pay-from--label">Pay From</mat-label>
+    <mat-button-toggle-group
+      name="payFrom"
+      aria-label="Pay From"
+      formControlName="payFrom"
+      class="input-items__pay-from"
+    >
+      <mat-button-toggle value="cash">Cash</mat-button-toggle>
+      <mat-button-toggle value="capital">Capital</mat-button-toggle>
+      <mat-button-toggle value="savings">Savings</mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-dialog-content>
+</form>
+<!-- Pay from -->
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="pay()" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

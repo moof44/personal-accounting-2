@@ -40,11 +40,11 @@ import { ExpenseStore } from '@app/shared/store/expense.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUpdateExpenseComponent implements OnInit {
-  private _fb = inject(FormBuilder);
-  private _router = inject(Router);
-  private readonly _expenseStore = inject(ExpenseStore);
+  #fb = inject(FormBuilder);
+  #router = inject(Router);
+  readonly #expenseStore = inject(ExpenseStore);
 
-  formGroup = this._fb.group({
+  formGroup = this.#fb.group({
     id: '',
     date: [new Date(), Validators.required],
     description: ["Meralo", Validators.required],
@@ -55,7 +55,7 @@ export class AddUpdateExpenseComponent implements OnInit {
   @Input()
   set id(id: string) {
     this.expenseId = id;
-    const expense = this._expenseStore.entities().find((v) => v.id === id)!;
+    const expense = this.#expenseStore.entities().find((v) => v.id === id)!;
     this.formGroup.patchValue(expense as any);
   }
 
@@ -64,19 +64,19 @@ export class AddUpdateExpenseComponent implements OnInit {
   ngOnInit(): void {}
 
   goBack() {
-    this._router.navigate(['/expense']);
+    this.#router.navigate(['/expense']);
   }
 
   onSubmit() {
     if (this.formGroup.valid) {
       if (this.expenseId) {
-        this._expenseStore
+        this.#expenseStore
           .updateExpense(this.expenseId, this.formGroup.value as any)
           .subscribe((v) => {
             this.goBack();
           });
       } else {
-        this._expenseStore
+        this.#expenseStore
           .addExpense(this.formGroup.value as any)
           .subscribe((v) => {
             if (v) this.goBack();
@@ -88,7 +88,7 @@ export class AddUpdateExpenseComponent implements OnInit {
 
   deleteExpense() {
     if (this.expenseId) {
-      this._expenseStore.deleteExpense(this.expenseId).subscribe((v) => {
+      this.#expenseStore.deleteExpense(this.expenseId).subscribe((v) => {
         this.goBack();
       })
     }

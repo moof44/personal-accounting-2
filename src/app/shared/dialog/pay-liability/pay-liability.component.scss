@@ -1,0 +1,18 @@
+:host{
+    .input-items{
+        display: flex;
+        width: -webkit-fill-available;
+        flex-direction: column;
+        height: 11rem;
+
+        &__amount{}
+        &__pay-from{
+            display:flex;
+            width:fit-content;
+
+            &--label{
+                margin-bottom:.5rem;
+            }
+        }
+    }
+}

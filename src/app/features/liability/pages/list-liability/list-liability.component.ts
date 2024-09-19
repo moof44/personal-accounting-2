@@ -23,11 +23,11 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { Liability } from '@app/models/liability'; // Import Liability model
 import {
   Pagination,
   TableFilter
 } from '@app/models/global.model';
+import { Liability } from '@app/models/liability.model';
 import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
 import { PreventSpaceTriggerDirectiveDirective } from '@app/shared/directives/prevent-space-trigger-directive.directive';
 import { LiabilityStore } from '@app/shared/store/liability.store'; // Import LiabilityStore

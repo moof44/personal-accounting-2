@@ -9,6 +9,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
 import { ListLiabilityComponent } from './pages/list-liability/list-liability.component'; // Import ListLiabilityComponent
 import { AddUpdateLiabilityComponent } from './pages/add-update-liability/add-update-liability.component'; // Import AddUpdateLiabilityComponent
+import { LiabilityService } from './liability.service';
 
 
 @Component({
@@ -25,7 +26,8 @@ import { AddUpdateLiabilityComponent } from './pages/add-update-liability/add-up
     RouterModule,
   ],
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
+    LiabilityService, // Add LiabilityService to providers
   ],
   templateUrl: './liability.component.html', // Update templateUrl
   styleUrl: './liability.component.scss', // Update styleUrl
