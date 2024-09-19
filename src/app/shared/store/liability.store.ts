@@ -20,7 +20,7 @@
 
 import { computed, inject, Signal } from '@angular/core';
 import { TableSettings } from '@app/models/global.model';
-import { Liability } from '@app/models/liability'; // Assuming you have this model
+import { Liability } from '@app/models/liability.model';
 import { LiabilityService } from '@app/services/liability.service';
 import { tapResponse } from '@ngrx/operators';
 import {

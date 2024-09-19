@@ -1,0 +1,63 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$azure-palette,
+  ),
+));
+
+// Define a light theme
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+  ),
+));
+
+// $my-toolbar-theme: mat.define-palette(mat.$azure-palette);
+
+/* Global Styles */
+html, body { 
+  height: 100%; 
+  // Apply the dark theme by default
+  @include mat.core-theme($dark-theme);
+  @include mat.button-theme($dark-theme);
+
+  // Apply the light theme only when the user prefers light themes.
+  @media (prefers-color-scheme: light) {
+    // Use the `-color` mixins to only apply color styles without reapplying the same
+    // typography and density styles.
+    @include mat.core-color($light-theme);
+    @include mat.button-color($light-theme);
+  }
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// :root {
+//   --mat-toolbar-container-background-color: #B93B3E; 
+//   --mat-toolbar-container-text-color: #FFFFFF; 
+// }
+
+/* Table Styles */
+table {
+ thead {
+   .left-text {
+     text-align: left;
+   }
+   .right-text {
+     text-align: right;
+   }
+   .center-text {
+     text-align: center;
+   }
+   .justify-text {
+     text-align: justify;
+   }
+ }
+}
+
+.q-pointer{
+ cursor: pointer;
+}

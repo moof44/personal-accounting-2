@@ -1,8 +1,4 @@
-export interface Purchase {
-  id: string;
-  description: string;
-  amount: number;
-  remarks: string;
-  date: Date | string;
-  // Add other relevant fields
+import { DefaultFormEntry } from "./global.model";
+
+export interface Purchase extends DefaultFormEntry{
 }

@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
-import { Liability } from '../models/liability';
+import { Liability } from '../models/liability.model';
 
 @Injectable({
   providedIn: 'root',
