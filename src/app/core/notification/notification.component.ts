@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, type OnInit } from '@angular/core';
-import { NotificationService } from '../notification.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from './notification.service';
 
 @Component({
   selector: 'app-notification',
@@ -33,8 +32,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent implements OnInit {
-  notificationService = inject(NotificationService);
-  notification = this.notificationService.notification;
+  notification = inject(NotificationService).notification;
   // snackBar = inject(MatSnackBar);
   
   ngOnInit(): void { }

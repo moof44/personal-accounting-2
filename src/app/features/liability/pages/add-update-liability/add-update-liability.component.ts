@@ -25,6 +25,9 @@ import { PayLiabilityOutputData } from '@app/shared/dialog/dialog.model';
 import { PayLiabilityComponent } from '@app/shared/dialog/pay-liability/pay-liability.component';
 import { ExpenseStore } from '@app/shared/store/expense.store';
 import { LiabilityStore } from '@app/shared/store/liability.store'; // Import LiabilityStore
+import { catchError, finalize } from 'rxjs';
+import { LiabilityFeatureService } from '../../liability-feature.service';
+import { LoadingService } from '@app/core/loading/loading.service';
 
 @Component({
   selector: 'app-add-update-liability', // Update selector
@@ -52,6 +55,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
   readonly #dialog = inject(MatDialog);
   readonly #expenseStore = inject(ExpenseStore);
   readonly #notificationService = inject(NotificationService);
+  readonly #liabilityFeatureService = inject(LiabilityFeatureService);
 
   formGroup = this.#fb.group({
     id: '',
@@ -81,25 +85,77 @@ export class AddUpdateLiabilityComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: PayLiabilityOutputData) => {
-      let message = ''; 
-
-      if (!result || result.amount > this.formGroup.value.amount! || result.amount <= 0) {
+      if (
+        !result ||
+        result.amount > this.formGroup.value.amount! ||
+        result.amount <= 0
+      ) {
         this.#notificationService.showNotification('validity', 'error');
         return;
       }
-      message = `${result.amount|| 'Payment'} has been successfully credited.`;
 
-      //this.#notificationService.showNotification('create', 'success');
-      //this.#notificationService.showNotification('custom', 'success', undefined, message); 
+      // ... inside the dialogRef.afterClosed() subscribe block ...
+      let successMessage = '';
+      successMessage = `Payment has been successfully credited.`;
 
-      // if payFrom is cash, create entry for expense
-      // if payFrom is capital, create entry for purchase
-
-      
-      switch(result.payFrom){
+      switch (result.payFrom) {
         case 'cash':
+          this.#liabilityFeatureService
+            .createExpense({
+              date: new Date(), // Or get the date from your form
+              description: 'Payment for ' + this.formGroup.value.description, // Dynamic description
+              amount: result.amount,
+              remarks: 'Paid from cash', // Optional remarks
+            })
+            .pipe(
+              catchError((err, caught) => {
+                this.#notificationService.showNotification(
+                  'create',
+                  'error',
+                  undefined,
+                  'payment'
+                );
+                return caught;
+              }),
+            )
+            .subscribe(() => {
+              // Handle success, e.g., show a notification
+              this.#notificationService.showNotification(
+                'custom',
+                'success',
+                undefined,
+                successMessage
+              );
+            });
           break;
         case 'capital':
+          this.#liabilityFeatureService
+            .createPurchase({
+              date: new Date(),
+              description: 'Liability payment using capital',
+              amount: result.amount,
+              remarks: 'Deducted from capital',
+            })
+            .pipe(
+              catchError((err, caught) => {
+                this.#notificationService.showNotification(
+                  'create',
+                  'error',
+                  undefined,
+                  'payment'
+                );
+                return caught;
+              }),
+            )
+            .subscribe(() => {
+              // Handle success
+              this.#notificationService.showNotification(
+                'custom',
+                'success',
+                undefined,
+                successMessage
+              );
+            });
           break;
         default:
           break;

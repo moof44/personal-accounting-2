@@ -120,13 +120,13 @@ export const LiabilityStore = signalStore(
       )
     ),
     addLiability: (data: Partial<Liability>) => {
-      return from(liabilityService.save(data)).pipe(take(1)); // Assuming 'save' method in LiabilityService
+      return liabilityService.save(data); 
     },
     updateLiability: (id: string, data: Partial<Liability>) => {
-      return from(liabilityService.update(id, data)).pipe(take(1)); // Assuming 'update' method
+      return liabilityService.update(id, data); 
     },
     deleteLiability: (id: string) => {
-      return from(liabilityService.delete(id)).pipe(take(1)); // Assuming 'delete' method
+      return liabilityService.delete(id); 
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator

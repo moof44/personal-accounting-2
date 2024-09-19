@@ -13,7 +13,8 @@ import { ExpenseStore } from './shared/store/expense.store';
 import { LiabilityStore } from './shared/store/liability.store';
 import { PurchaseStore } from './shared/store/purchase.store';
 import { SummaryStore } from './shared/store/summary.store';
-import { NotificationComponent } from './core/notification/notification/notification.component';
+import { NotificationComponent } from './core/notification/notification.component';
+import { LoadingSpinnerComponent } from './core/loading/loading-spinner.component';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { NotificationComponent } from './core/notification/notification/notifica
     AuthorizedLayoutComponent,
     ShortcutCommandComponent,
     PageNotFoundComponent,
+    LoadingSpinnerComponent,
 ],
   providers: [
     IncomeStore,
