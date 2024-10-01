@@ -19,7 +19,7 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
-import { LoadingService } from '@app/core/loading/loading.service';
+import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { Expense } from '@app/models/expense.model';
 import { TableSettings } from '@app/models/global.model';
 import { ExpenseService } from '@app/services/expense.service';

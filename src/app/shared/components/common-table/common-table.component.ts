@@ -64,6 +64,7 @@ export class CommonTableComponent implements OnInit, AfterViewInit {
   pagination = output<{current: number, pageSize: number}>();
   // SEARCH RELATED
   filter = input<FilterSettings>();
+  withFilter = input<boolean>(true);
   #searchInput = computed(()=>{
     this.search.setValue(this.filter()?.query || '');
     this.range.patchValue({

@@ -34,7 +34,7 @@ import {
 } from '@ngrx/signals';
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { from, map, pipe, switchMap, take } from 'rxjs';
+import { map, pipe, switchMap } from 'rxjs';
 
 function withIncomeSettings() {
   return signalStoreFeature(

@@ -58,7 +58,6 @@ export class PayLiabilityComponent implements OnInit {
   }
 
   pay() {
-    console.log('pay liability: ', this.formGroup.value);
     this.dialogRef.close(this.formGroup.value);
   }
 }

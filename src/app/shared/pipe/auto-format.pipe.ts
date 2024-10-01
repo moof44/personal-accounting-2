@@ -22,6 +22,10 @@ export class AutoFormatPipe implements PipeTransform {
       }).format(value); 
     } else if (value instanceof Date) {
       return this.datePipe.transform(value, dateFormat);
+    } else if (value && typeof value === 'object' && 'seconds' in value && 'nanoseconds' in value) { 
+      // Check if it's a Firebase Timestamp-like object
+      const date = new Date(value.seconds * 1000 + value.nanoseconds / 1000000); 
+      return this.datePipe.transform(date, dateFormat);
     } else {
       return value; 
     }

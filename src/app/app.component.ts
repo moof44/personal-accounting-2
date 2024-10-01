@@ -6,15 +6,16 @@ import { pageComponentAnimation } from '@shared/animations/general-animations';
 import { ShortcutCommandComponent } from '@shared/components/shortcut-command/shortcut-command.component';
 import { AuthorizedLayoutComponent } from '@shared/layout/authorized-layout/authorized-layout.component';
 import { IncomeStore } from '@shared/store/income.store';
-import { NotificationService } from './core/notification/notification.service';
+import { NotificationService } from './global/notification/notification.service';
 import { PageNotFoundComponent } from "./features/page-not-found/page-not-found.component";
 import { CapitalStore } from './shared/store/capital.store';
 import { ExpenseStore } from './shared/store/expense.store';
 import { LiabilityStore } from './shared/store/liability.store';
 import { PurchaseStore } from './shared/store/purchase.store';
 import { SummaryStore } from './shared/store/summary.store';
-import { NotificationComponent } from './core/notification/notification.component';
-import { LoadingSpinnerComponent } from './core/loading/loading-spinner.component';
+import { NotificationComponent } from './global/notification/notification.component';
+import { LoadingSpinnerComponent } from './global/directives/loading/loading-spinner.component';
+import { PageStateStore } from './global/store/page-state.store';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ import { LoadingSpinnerComponent } from './core/loading/loading-spinner.componen
     PurchaseStore, 
     SummaryStore,
     LiabilityStore,
+    PageStateStore,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit{
   readonly #summaryStore = inject(SummaryStore);
   readonly #liabilityStore = inject(LiabilityStore);
   readonly #notification = inject(NotificationService);
+  readonly #pageStateStore = inject(PageStateStore);
   #snackBar = inject(MatSnackBar);
   //title = 'personal-accounting-2';
 

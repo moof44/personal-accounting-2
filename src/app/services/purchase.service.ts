@@ -12,8 +12,8 @@ import {
 } from '@angular/fire/firestore';
 import { Purchase } from '@app/models/purchase.model';
 import { finalize, from, Observable } from 'rxjs';
-import { LoadingService } from '@app/core/loading/loading.service';
-import { NotificationService } from '@app/core/notification/notification.service';
+import { LoadingService } from '@app/global/directives/loading/loading.service';
+import { NotificationService } from '@app/global/notification/notification.service';
 
 @Injectable({
   providedIn: 'root',
