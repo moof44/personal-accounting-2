@@ -7,12 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { PageParentComponent } from '@app/core/page-parent/page-parent.component';
-import { PageType } from '@app/models/global.model';
-import { pageComponentAnimation } from '@app/shared/animations/general-animations';
 import { LiabilityStore } from '@app/shared/store/liability.store'; // Import LiabilityStore
 import { LiabilityFeatureService } from './liability-feature.service';
 import { AddUpdateLiabilityComponent } from './pages/add-update-liability/add-update-liability.component'; // Import AddUpdateLiabilityComponent
 import { ListLiabilityComponent } from './pages/list-liability/list-liability.component'; // Import ListLiabilityComponent
+import { CommonButtonComponent } from '@app/shared/components/common-button/common-button.component';
 
 @Component({
   selector: 'feature-liability', // Update selector
@@ -27,23 +26,27 @@ import { ListLiabilityComponent } from './pages/list-liability/list-liability.co
     AddUpdateLiabilityComponent, // Use AddUpdateLiabilityComponent
     RouterOutlet,
     RouterModule,
+    CommonButtonComponent,
   ],
   providers: [
     provideNativeDateAdapter(),
     LiabilityFeatureService,
   ],
   templateUrl: './liability.component.html', // Update templateUrl
-  styleUrl: './liability.component.scss', // Update styleUrl
+  styleUrls: [
+    './liability.component.scss', 
+    '/src/app/core/page-parent/page-parent.component.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LiabilityComponent extends PageParentComponent implements OnInit { // Update component name
   readonly store = inject(LiabilityStore); // Inject LiabilityStore
+  private liabilityFeatureService = inject(LiabilityFeatureService)
   title = 'Liability'; // Update title
   currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
     private router: Router,
-    private liabilityFeatureService: LiabilityFeatureService,
   ){
     super();
   }

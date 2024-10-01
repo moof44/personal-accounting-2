@@ -51,3 +51,8 @@ export interface PageStateModel{
 }
 
 export type PageType = 'list' | 'add' | 'update'
+
+export interface ServiceFeatureState{
+  delete?: boolean,
+  deleteConfirmation?: boolean,
+}

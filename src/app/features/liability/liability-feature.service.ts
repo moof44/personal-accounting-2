@@ -4,16 +4,17 @@ import { Purchase } from '@app/models/purchase.model';
 import { ExpenseStore } from '@app/shared/store/expense.store';
 import { PurchaseStore } from '@app/shared/store/purchase.store';
 import { LiabilityFeatureState } from './liability-feature.model';
+import { ParentFeatureService } from '@app/core/service-parent/parent-feature.service';
 
 @Injectable()
-export class LiabilityFeatureService {
+export class LiabilityFeatureService extends ParentFeatureService{
 
   private expenseStore = inject(ExpenseStore);
   private purchaseStore = inject(PurchaseStore);
-  readonly pageState = signal<LiabilityFeatureState>({delete:false});
-  deleteTrigger = computed(()=>this.pageState().delete)
 
-  constructor() { }
+  constructor() { 
+    super();
+  }
 
   createExpense(expenseData: Expense) {
     return this.expenseStore.addExpense(expenseData);
@@ -24,11 +25,4 @@ export class LiabilityFeatureService {
   }
   
   createWidthdraw(){} // to add
-
-  setDeleteState(){
-    this.pageState.set({delete:true})
-    setTimeout(()=>{ // automatically set it to false
-      this.pageState.set({delete:false})
-    }, 1000)
-  }
 }

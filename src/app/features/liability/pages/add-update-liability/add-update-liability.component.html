@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <div class="liability-input-form">
-    <mat-form-field class="liability-input-form__input">
+  <div class="input-form">
+    <mat-form-field class="input-form__input">
       <mat-label>Date</mat-label>
       <input
         matInput
@@ -21,12 +21,12 @@
       </mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field class="liability-input-form__input">
+    <mat-form-field class="input-form__input">
       <mat-label>Description</mat-label>
       <input matInput formControlName="description" [disableOnLoading]="true" />
     </mat-form-field>
 
-    <mat-form-field class="liability-input-form__input">
+    <mat-form-field class="input-form__input">
       <mat-label>Amount</mat-label>
       <input
         matInput
@@ -36,7 +36,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field class="liability-input-form__input">
+    <mat-form-field class="input-form__input">
       <mat-label>Remarks</mat-label>
       <textarea
         matInput
@@ -44,7 +44,7 @@
         [disableOnLoading]="true"
       ></textarea>
     </mat-form-field>
-    <div class="liability-input-form__actions">
+    <div class="input-form__actions">
       <button mat-button type="button" (click)="goBack()" color="accent">
         Cancel
       </button>

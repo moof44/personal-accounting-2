@@ -1,0 +1,39 @@
+:host{
+    mat-card-header{
+        ::ng-deep{
+            .mat-mdc-card-header-text{
+                width: 100%;
+            }
+        }
+    }
+    mat-card-title{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+
+        h1{
+            font-size: 1.37rem;
+            font-weight: 400;
+        }
+    }
+
+    .liability-action{
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .add-icon, .delete-icon{
+        font-weight: 700;
+        font-size: 1.09rem;
+        margin-right: 0.1rem;
+        margin-top: -0.25rem;
+    }
+
+    .button-actions{
+        display:flex;
+        gap:.5rem;
+    }
+}
