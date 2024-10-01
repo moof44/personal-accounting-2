@@ -1,21 +1,48 @@
-.liability-input-form{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-
-    &__input{
-        min-width: 21rem;
-        max-width: 100%;
-        width: 49%;
+:host{
+    .liability-input-form{
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+    
+        &__input{
+            min-width: 21rem;
+            max-width: 100%;
+            width: 49%;
+        }
+    
+        &__actions{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
     }
 
-    &__actions{
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
+    .payment-container{
+        display:flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin-top:2rem;
+
+        &__pay-button-wrapper{
+            width: 100%;
+            text-align: right;
+        }
+
+        &__pay-button{
+            width: 6rem;
+        }
     }
 }
+  
+@media (max-width: 425px) {
+    .payment-container{
+        &__pay-button {
+            width: 100% !important;
+        }
+    }
+}
+  

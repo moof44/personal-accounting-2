@@ -1,35 +1,37 @@
-<mat-accordion class="search-expansion">
-  <mat-expansion-panel>
-      <mat-expansion-panel-header>
-          <mat-panel-title>
-              <mat-form-field class="income-list-search">
-                  <mat-label>Search</mat-label>
-                  <input matInput [formControl]="search" 
-                      (click)="stopPropagation($event)"
-                      preventSpaceTrigger
-                  />
+@if (withFilter()) {
+    <mat-accordion class="search-expansion">
+      <mat-expansion-panel>
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+                  <mat-form-field class="income-list-search">
+                      <mat-label>Search</mat-label>
+                      <input matInput [formControl]="search" 
+                          (click)="stopPropagation($event)"
+                          preventSpaceTrigger
+                      />
+                  </mat-form-field>
+              </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+              <mat-form-field class="filter">
+                  <mat-label>Enter a date range</mat-label>
+                  <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                      <input matStartDate formControlName="start" placeholder="Start date">
+                      <input matEndDate formControlName="end" placeholder="End date">
+                  </mat-date-range-input>
+                  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                  <div class="clear-icon">
+                      <button mat-icon-button matSuffix (click)="clearDatePicker()" aria-label="Clear">
+                          <mat-icon>close</mat-icon>
+                      </button>
+                  </div>
               </mat-form-field>
-          </mat-panel-title>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-          <mat-form-field class="filter">
-              <mat-label>Enter a date range</mat-label>
-              <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-                  <input matStartDate formControlName="start" placeholder="Start date">
-                  <input matEndDate formControlName="end" placeholder="End date">
-              </mat-date-range-input>
-              <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-              <div class="clear-icon">
-                  <button mat-icon-button matSuffix (click)="clearDatePicker()" aria-label="Clear">
-                      <mat-icon>close</mat-icon>
-                  </button>
-              </div>
-          </mat-form-field>
-      </ng-template>        
-  </mat-expansion-panel> 
-</mat-accordion>
+          </ng-template>        
+      </mat-expansion-panel> 
+    </mat-accordion>
+}
 
 <table 
     mat-table [dataSource]="dataSource()" class="mat-elevation-z8"

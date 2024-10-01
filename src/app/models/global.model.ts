@@ -43,3 +43,11 @@ export interface DefaultFormEntry{
   amount: number;
   remarks: string;
 }
+
+export interface PageStateModel{
+  module: string,
+  title: string,
+  type: PageType,
+}
+
+export type PageType = 'list' | 'add' | 'update'

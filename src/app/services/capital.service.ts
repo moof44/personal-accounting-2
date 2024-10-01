@@ -12,9 +12,9 @@ import {
 } from '@angular/fire/firestore';
 import { Capital } from '@app/models/capital.model';
 import { finalize, from, Observable } from 'rxjs';
-import { LoadingService } from '@app/core/loading/loading.service';
+import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { inject } from '@angular/core';
-import { NotificationService } from '@app/core/notification/notification.service';
+import { NotificationService } from '@app/global/notification/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -53,9 +53,7 @@ export class CapitalService {
     this.#loadingService.setLoading(true, 'Saving...');
     return from(
       addDoc(this._capitalCollection, data)
-        .then((documentReference: DocumentReference) => {
-          return documentReference;
-        })
+        .then((documentReference: DocumentReference) => documentReference)
         .catch((e) => {
           this.#notificationService.showNotification('create', 'error');
         })
@@ -72,9 +70,10 @@ export class CapitalService {
     this.#loadingService.setLoading(true, 'Updating...');
     const docRef = doc(this._firestore, this._capitalCollectionName, id);
     return from(
-      updateDoc(docRef, data).catch((e) => {
-        this.#notificationService.showNotification('update', 'error');
-      })
+      updateDoc(docRef, data)
+        .catch((e) => {
+          this.#notificationService.showNotification('update', 'error');
+        })
     ).pipe(this.#finalize());
   }
 

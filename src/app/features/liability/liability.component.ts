@@ -10,6 +10,10 @@ import { pageComponentAnimation } from '@app/shared/animations/general-animation
 import { ListLiabilityComponent } from './pages/list-liability/list-liability.component'; // Import ListLiabilityComponent
 import { AddUpdateLiabilityComponent } from './pages/add-update-liability/add-update-liability.component'; // Import AddUpdateLiabilityComponent
 import { LiabilityFeatureService } from './liability-feature.service';
+import { MatIconModule } from '@angular/material/icon';
+import { PageType } from '@app/models/global.model';
+import { PageStateStore } from '@app/global/store/page-state.store';
+import { PageParentComponent } from '@app/core/page-parent/page-parent.component';
 
 
 @Component({
@@ -20,6 +24,7 @@ import { LiabilityFeatureService } from './liability-feature.service';
     MatTableModule,
     MatCardModule,
     MatButtonModule,
+    MatIconModule, 
     ListLiabilityComponent, // Use ListLiabilityComponent
     AddUpdateLiabilityComponent, // Use AddUpdateLiabilityComponent
     RouterOutlet,
@@ -36,40 +41,38 @@ import { LiabilityFeatureService } from './liability-feature.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LiabilityComponent implements OnInit { // Update component name
-  @HostBinding('class.content__page') pageClass = true;
-  @HostBinding('@routeAnimations') routeAnimations = true;
-
+export class LiabilityComponent extends PageParentComponent implements OnInit { // Update component name
   readonly store = inject(LiabilityStore); // Inject LiabilityStore
   title = 'Liability'; // Update title
   currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
-  ){}
+    private liabilityFeatureService: LiabilityFeatureService,
+  ){
+    super();
+  }
 
   ngOnInit(): void { 
-    const currentUrl = this.route.snapshot?.url[0]?.path;
-    if(currentUrl === '/liability/add'){ // Update route check
-      this.currentPage.set('add');
-    }else{
-      this.currentPage.set('list');
-    }
+    //this.currentPage.set(this.getCurrentPage(this.router.url))
+    this.pageStateStore.setType(this.getCurrentPage(this.router.url))
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const currentRoute = event.urlAfterRedirects;
-        const currentPage = this.getCurrentPage(currentRoute);
-        this.currentPage.set(currentPage);
+        //this.currentPage.set(this.getCurrentPage(event.urlAfterRedirects));
+        this.pageStateStore.setType(this.getCurrentPage(event.urlAfterRedirects))
       }
     });
   }
 
-  getCurrentPage(page:string): 'add'|'update'|'list' {
+  getCurrentPage(page:string): PageType {
     if (page === '/liability/add') return 'add'; // Update route check
     if (page.startsWith('/liability/update/')) return 'update'; // Update route check
     return 'list';
+  }
+
+  triggerDelete(){
+    this.liabilityFeatureService.setDeleteState();
   }
 
 }

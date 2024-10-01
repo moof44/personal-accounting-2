@@ -1,46 +1,100 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-    <div class="liability-input-form">
-  
-      <mat-form-field class="liability-input-form__input">
-        <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="datepicker" formControlName="date" [disableOnLoading]="true"/>
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="datepicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #datepicker>
-          <mat-datepicker-actions>
-            <button mat-button matDatepickerCancel>Cancel</button>
-            <button mat-raised-button matDatepickerApply>Apply</button>
-          </mat-datepicker-actions>
-        </mat-datepicker>
-      </mat-form-field>
-  
-      <mat-form-field class="liability-input-form__input">
-        <mat-label>Description</mat-label>
-        <input matInput formControlName="description" [disableOnLoading]="true"/>
-      </mat-form-field>
-  
-      <mat-form-field class="liability-input-form__input">
-        <mat-label>Amount</mat-label>
-        <input matInput type="number" formControlName="amount" [disableOnLoading]="true"/>
-      </mat-form-field>
-  
-      <mat-form-field class="liability-input-form__input">
-        <mat-label>Remarks</mat-label>
-        <textarea matInput formControlName="remarks" [disableOnLoading]="true"></textarea>
-      </mat-form-field>
+  <div class="liability-input-form">
+    <mat-form-field class="liability-input-form__input">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datepicker"
+        formControlName="date"
+        [disableOnLoading]="true"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="datepicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datepicker>
+        <mat-datepicker-actions>
+          <button mat-button matDatepickerCancel>Cancel</button>
+          <button mat-raised-button matDatepickerApply>Apply</button>
+        </mat-datepicker-actions>
+      </mat-datepicker>
+    </mat-form-field>
 
-      <div class="liability-input-form__actions">
-        <button mat-button type="button" color="accent" (click)="openDialog()">Pay</button>
-        <button mat-button type="button" (click)="deleteLiability()" color="warn">Delete</button>
-      </div>
-  
-      <div class="liability-input-form__actions">
-          <button mat-button type="button"(click)="goBack()" color="accent">Cancel</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup.valid">Submit</button>
-      </div>
+    <mat-form-field class="liability-input-form__input">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" [disableOnLoading]="true" />
+    </mat-form-field>
+
+    <mat-form-field class="liability-input-form__input">
+      <mat-label>Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="amount"
+        [disableOnLoading]="true"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="liability-input-form__input">
+      <mat-label>Remarks</mat-label>
+      <textarea
+        matInput
+        formControlName="remarks"
+        [disableOnLoading]="true"
+      ></textarea>
+    </mat-form-field>
+    <div class="liability-input-form__actions">
+      <button mat-button type="button" (click)="goBack()" color="accent">
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!formGroup.valid"
+      >
+        Submit
+      </button>
     </div>
-  </form>
-  
+  </div>
+</form>
+
+@if( pageStateStore.type() === 'update'){
+<div class="payment-container">
+  @if (dataSource.length > 0) {
+  <mat-accordion>
+    <mat-expansion-panel
+      (opened)="paymentHistoryOpenState.set(true)"
+      (closed)="paymentHistoryOpenState.set(false)"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title> Payment History </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <shared-common-table
+          [dataSource]="dataSource"
+          [displayedColumns]="displayedColumns()"
+          [dataCount]="paymentHistory.length"
+          [withFilter]="false"
+          [screensize]="mobileQuery.matches ? 'mobile' : 'desktop'"
+        >
+        </shared-common-table>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+  }
+
+  <div class="payment-container__pay-button-wrapper">
+    <button
+      mat-flat-button
+      type="button"
+      color="accent"
+      (click)="openDialog()"
+      class="payment-container__pay-button"
+    >
+      Pay
+    </button>
+  </div>
+</div>
+}
