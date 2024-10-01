@@ -2,11 +2,14 @@
   <mat-card-header>
     <mat-card-title>
       <h1>{{ title }}</h1>
-      @if (pageStateStore.type() === 'list') {
-      <ng-container *ngTemplateOutlet="addBtn"></ng-container>
-      } @else {
-      <ng-container *ngTemplateOutlet="deleteBtn"></ng-container>
-      }
+      <div class="button-actions">
+        @if (pageStateStore.type() === 'list') {
+        <ng-container *ngTemplateOutlet="addBtn"></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="deleteBtn"></ng-container>
+          <ng-container *ngTemplateOutlet="backBtn"></ng-container>
+        }
+      </div>
     </mat-card-title>
   </mat-card-header>
 
@@ -33,12 +36,12 @@
 </ng-template>
 
 <ng-template #backBtn>
-  <button mat-button [routerLink]="['./']">Back</button>
+  <button mat-raised-button [routerLink]="['./']">Back</button>
 </ng-template>
 
 <ng-template #deleteBtn>
   <button
-    mat-raised-button
+    mat-flat-button
     color="warn"
     (click)="triggerDelete()"
   >

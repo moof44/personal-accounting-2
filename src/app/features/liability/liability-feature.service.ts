@@ -29,6 +29,6 @@ export class LiabilityFeatureService {
     this.pageState.set({delete:true})
     setTimeout(()=>{ // automatically set it to false
       this.pageState.set({delete:false})
-    }, 3000)
+    }, 1000)
   }
 }
