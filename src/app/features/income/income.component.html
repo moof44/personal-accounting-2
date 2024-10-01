@@ -1,36 +1,21 @@
 <mat-card appearance="outlined">
     <mat-card-header>
         <mat-card-title>
-            {{title}}
-            @if (currentPage() === 'list') {
-                <ng-container *ngTemplateOutlet="addBtn"></ng-container>
-            }
-            @else {
-                <ng-container *ngTemplateOutlet="backBtn"></ng-container>
-            }
+            <h1>{{ title }}</h1>
+            <div class="button-actions">
+                @if(pageStateStore.type() === 'update'){
+                    <common-button type="delete" (click)="triggerDelete()" />
+                }
+                @if (pageStateStore.type() === 'list') {
+                    <common-button type="add" routerLink="./add" />
+                } @else {
+                    <common-button type="back" routerLink="./" />
+                }
+            </div>
         </mat-card-title>
     </mat-card-header>
     
     <mat-card-content>
-        <!-- <page-list-income [dataSource]="store.entities()"></page-list-income> -->
-         <router-outlet></router-outlet>
+        <router-outlet></router-outlet>
     </mat-card-content>
-    <mat-card-actions class="income-action">
-        @if (currentPage() === 'list') {
-            <ng-container *ngTemplateOutlet="addBtn"></ng-container>
-        }
-        @else {
-            <ng-container *ngTemplateOutlet="backBtn"></ng-container>
-        }
-    </mat-card-actions>
 </mat-card>
-
-<!-- Templates -->
-
-<ng-template #addBtn>
-    <button mat-button [routerLink]="'./add'">Add</button>
-</ng-template>
-
-<ng-template #backBtn>
-    <button mat-button [routerLink]="['./']">Back</button>
-</ng-template>

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   Input,
   type OnInit,
@@ -19,7 +20,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
+import { PageStateStore } from '@app/global/store/page-state.store';
 import { IncomeStore } from '@app/shared/store/income.store';
+import { IncomeFeatureService } from '../../income-feature.service';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationService } from '@app/global/notification/notification.service';
+import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 
 @Component({
   selector: 'app-add-update-income',
@@ -36,13 +42,21 @@ import { IncomeStore } from '@app/shared/store/income.store';
     ReactiveFormsModule,
   ],
   templateUrl: './add-update-income.component.html',
-  styleUrl: './add-update-income.component.scss',
+  styleUrls: [
+    './add-update-income.component.scss', 
+    '/src/app/core/page-parent/add-update-page.component.scss'
+  ], 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUpdateIncomeComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _router = inject(Router);
   private readonly _incomeStore = inject(IncomeStore);
+  readonly #dialog = inject(MatDialog);
+  readonly #notificationService = inject(NotificationService);
+  readonly #incomeFeatureService = inject(IncomeFeatureService);
+  readonly pageStateStore = inject(PageStateStore);
+
 
   formGroup = this._fb.group({
     id: '',
@@ -60,6 +74,13 @@ export class AddUpdateIncomeComponent implements OnInit {
   }
 
   incomeId = '';
+
+  constructor(){
+    effect(()=>{
+      if(this.#incomeFeatureService.deleteTrigger() === true)
+        this.deleteDialog();
+    })
+  }
 
   ngOnInit(): void {}
 
@@ -92,5 +113,18 @@ export class AddUpdateIncomeComponent implements OnInit {
         this.goBack();
       })
     }
+  }
+
+  deleteDialog() {
+    const dialogRef = this.#dialog.open(DeleteConfirmationComponent, {
+      data: this.formGroup.value.incomeSource,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      console.log('result', result);
+      if (result === true) {
+        this.deleteIncome();
+      }
+    });
   }
 }

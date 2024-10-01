@@ -1,3 +1,4 @@
+import { MediaMatcher } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -6,9 +7,8 @@ import {
   effect,
   inject,
   Input,
-  Signal,
   signal,
-  type OnInit,
+  type OnInit
 } from '@angular/core';
 import {
   FormBuilder,
@@ -27,16 +27,15 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { DisableDirective } from '@app/global/directives/loading/disable.directive';
 import { NotificationService } from '@app/global/notification/notification.service';
+import { PageStateStore } from '@app/global/store/page-state.store';
+import { PaymentHistory } from '@app/models/liability.model';
+import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
 import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 import { PayLiabilityOutputData } from '@app/shared/dialog/dialog.model';
 import { PayLiabilityComponent } from '@app/shared/dialog/pay-liability/pay-liability.component';
 import { LiabilityStore } from '@app/shared/store/liability.store'; // Import LiabilityStore
 import { catchError } from 'rxjs';
 import { LiabilityFeatureService } from '../../liability-feature.service';
-import { PageStateStore } from '@app/global/store/page-state.store';
-import { PaymentHistory } from '@app/models/liability.model';
-import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
-import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-add-update-liability', // Update selector
@@ -56,7 +55,10 @@ import { MediaMatcher } from '@angular/cdk/layout';
     CommonTableComponent,
   ],
   templateUrl: './add-update-liability.component.html', // Update templateUrl
-  styleUrl: './add-update-liability.component.scss', // Update styleUrl
+  styleUrls: [
+    './add-update-liability.component.scss', 
+    '/src/app/core/page-parent/add-update-page.component.scss'
+  ], 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUpdateLiabilityComponent implements OnInit {
@@ -134,13 +136,11 @@ export class AddUpdateLiabilityComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: PayLiabilityOutputData) => {
-      console.log('result', result);
       if (result.amount > this.formGroup.value.amount! || result.amount <= 0) {
         this.#notificationService.showNotification('validity', 'error');
         return;
       }
 
-      // ... inside the dialogRef.afterClosed() subscribe block ...
       let successMessage = '';
       successMessage = `Payment has been successfully credited.`;
 
@@ -174,6 +174,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
+                  amount: this.formGroup.value.amount! - result.amount,
                   paymentHistory,
                 })
                 .subscribe(() => {
@@ -214,6 +215,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
+                  amount: this.formGroup.value.amount! - result.amount,
                   paymentHistory,
                 })
                 .subscribe(() => {
@@ -278,5 +280,9 @@ export class AddUpdateLiabilityComponent implements OnInit {
         this.goBack();
       });
     }
+  }
+
+  get amount(){
+    return this.formGroup.controls.amount;
   }
 }

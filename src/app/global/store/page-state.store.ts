@@ -18,23 +18,14 @@
  *      3.9 conside the ff: tapResponse
  */
 
-import { computed, inject, Signal } from '@angular/core';
-import { PageStateModel, PageType, TableSettings } from '@app/models/global.model';
-import { Income } from '@app/models/income.model';
-import { IncomeService } from '@app/services/income.service';
-import { tapResponse } from '@ngrx/operators';
+import { PageStateModel, PageType } from '@app/models/global.model';
 import {
   patchState,
   signalStore,
-  signalStoreFeature,
   withComputed,
-  withHooks,
   withMethods,
   withState
 } from '@ngrx/signals';
-import { setAllEntities, withEntities } from '@ngrx/signals/entities';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { map, pipe, switchMap } from 'rxjs';
 
 // export interface PageStateModel{
 //     title: string,

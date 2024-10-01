@@ -8,5 +8,7 @@
             "skipDisplayBlock": true,
             "ngOnInit": true
         }
-    }
+    },
+    "IDX.aI.enableInlineCompletion": true,
+    "IDX.aI.enableCodebaseIndexing": true
 }
