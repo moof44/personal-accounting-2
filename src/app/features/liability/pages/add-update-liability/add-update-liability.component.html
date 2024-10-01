@@ -85,16 +85,18 @@
   </mat-accordion>
   }
 
-  <div class="payment-container__pay-button-wrapper">
-    <button
-      mat-flat-button
-      type="button"
-      color="accent"
-      (click)="openDialog()"
-      class="payment-container__pay-button"
-    >
-      Pay
-    </button>
-  </div>
+  @if (amount.value! > 0) {
+    <div class="payment-container__pay-button-wrapper">
+      <button
+        mat-flat-button
+        type="button"
+        color="accent"
+        (click)="openDialog()"
+        class="payment-container__pay-button"
+      >
+        Pay
+      </button>
+    </div>
+  }
 </div>
 }

@@ -134,13 +134,11 @@ export class AddUpdateLiabilityComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: PayLiabilityOutputData) => {
-      console.log('result', result);
       if (result.amount > this.formGroup.value.amount! || result.amount <= 0) {
         this.#notificationService.showNotification('validity', 'error');
         return;
       }
 
-      // ... inside the dialogRef.afterClosed() subscribe block ...
       let successMessage = '';
       successMessage = `Payment has been successfully credited.`;
 
@@ -174,6 +172,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
+                  amount: this.formGroup.value.amount! - result.amount,
                   paymentHistory,
                 })
                 .subscribe(() => {
@@ -214,6 +213,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
+                  amount: this.formGroup.value.amount! - result.amount,
                   paymentHistory,
                 })
                 .subscribe(() => {
@@ -278,5 +278,9 @@ export class AddUpdateLiabilityComponent implements OnInit {
         this.goBack();
       });
     }
+  }
+
+  get amount(){
+    return this.formGroup.controls.amount;
   }
 }
