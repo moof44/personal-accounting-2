@@ -23,6 +23,8 @@ It was observed that Angular suggest the following features:
 
 1. Installed with Angular-SSR
 2. Installed with Angular-PWA / Service Worker
+3. Implemented component and service inheritance - application of DRY principles
+4. Implemented reusable components - reduced redundancy by 70%
 
 ### Problems encountered
 
