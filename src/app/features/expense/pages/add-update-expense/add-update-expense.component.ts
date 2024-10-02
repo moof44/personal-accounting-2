@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   Input,
   type OnInit,
@@ -15,11 +16,15 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { ExpenseStore } from '@app/shared/store/expense.store';
+import { ExpenseFeatureService } from '../../expense-feature.service';
+import { PageStateStore } from '@app/global/store/page-state.store';
+import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 
 @Component({
   selector: 'app-add-update-expense',
@@ -36,13 +41,19 @@ import { ExpenseStore } from '@app/shared/store/expense.store';
     ReactiveFormsModule,
   ],
   templateUrl: './add-update-expense.component.html',
-  styleUrl: './add-update-expense.component.scss',
+  styleUrls: [
+    './add-update-expense.component.scss', 
+    '/src/app/core/page-parent/add-update-page.component.scss'
+  ], 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUpdateExpenseComponent implements OnInit {
   #fb = inject(FormBuilder);
   #router = inject(Router);
   readonly #expenseStore = inject(ExpenseStore);
+  readonly #dialog = inject(MatDialog);
+  readonly #expenseFeatureService = inject(ExpenseFeatureService);
+  readonly pageStateStore = inject(PageStateStore);
 
   formGroup = this.#fb.group({
     id: '',
@@ -55,11 +66,24 @@ export class AddUpdateExpenseComponent implements OnInit {
   @Input()
   set id(id: string) {
     this.expenseId = id;
-    const expense = this.#expenseStore.entities().find((v) => v.id === id)!;
-    this.formGroup.patchValue(expense as any);
   }
 
   expenseId = '';
+
+  constructor(){
+    effect(()=>{
+      if(this.#expenseFeatureService.deleteTrigger() === true)
+        this.deleteDialog();
+      this.initFormGroup();
+    })
+  }
+
+  initFormGroup() {
+    const expense = this.#expenseStore
+      .entities()
+      .find((v) => v.id === this.expenseId)!; // Use _liabilityStore
+    this.formGroup.patchValue(expense as any);
+  }
 
   ngOnInit(): void {}
 
@@ -92,6 +116,18 @@ export class AddUpdateExpenseComponent implements OnInit {
         this.goBack();
       })
     }
+  }
+
+  deleteDialog() {
+    const dialogRef = this.#dialog.open(DeleteConfirmationComponent, {
+      data: this.formGroup.value.description,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result === true) {
+        this.deleteExpense();
+      }
+    });
   }
 
 }
