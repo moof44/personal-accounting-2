@@ -53,7 +53,6 @@ export class AddUpdateIncomeComponent implements OnInit {
   private _router = inject(Router);
   private readonly _incomeStore = inject(IncomeStore);
   readonly #dialog = inject(MatDialog);
-  readonly #notificationService = inject(NotificationService);
   readonly #incomeFeatureService = inject(IncomeFeatureService);
   readonly pageStateStore = inject(PageStateStore);
 
@@ -121,7 +120,6 @@ export class AddUpdateIncomeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      console.log('result', result);
       if (result === true) {
         this.deleteIncome();
       }

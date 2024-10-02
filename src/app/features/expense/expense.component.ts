@@ -9,6 +9,9 @@ import { ListExpenseComponent } from './pages/list-expense/list-expense.componen
 import { AddUpdateExpenseComponent } from './pages/add-update-expense/add-update-expense.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
+import { PageParentComponent } from '@app/core/page-parent/page-parent.component';
+import { ExpenseFeatureService } from './expense-feature.service';
+import { CommonButtonComponent } from '@app/shared/components/common-button/common-button.component';
 
 
 @Component({
@@ -21,53 +24,37 @@ import { pageComponentAnimation } from '@app/shared/animations/general-animation
     MatButtonModule,
     ListExpenseComponent,
     AddUpdateExpenseComponent,
+    CommonButtonComponent,
     RouterOutlet,
     RouterModule,
   ],
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
+    ExpenseFeatureService,
   ],
   templateUrl: './expense.component.html',
-  styleUrl: './expense.component.scss',
-  animations: [
-    pageComponentAnimation,
+  styleUrls: [
+    './expense.component.scss', 
+    '/src/app/core/page-parent/page-parent.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExpenseComponent implements OnInit {
-  @HostBinding('class.content__page') pageClass = true;
-  @HostBinding('@routeAnimations') routeAnimations = true;
-
+export class ExpenseComponent extends PageParentComponent implements OnInit {
   readonly store = inject(ExpenseStore);
+  readonly expenseFeatureService = inject(ExpenseFeatureService);
   title = 'Expense';
-  currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-  ){}
+  ){
+    super();
+  }
 
   ngOnInit(): void { 
-    const currentUrl = this.route.snapshot?.url[0]?.path;
-    if(currentUrl === '/expense/add'){
-      this.currentPage.set('add');
-    }else{
-      this.currentPage.set('list');
-    }
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const currentRoute = event.urlAfterRedirects;
-        const currentPage = this.getCurrentPage(currentRoute);
-        this.currentPage.set(currentPage);
-      }
-    });
+    this.setPageType();
   }
 
-  getCurrentPage(page:string): 'add'|'update'|'list' {
-    if (page === '/expense/add') return 'add';
-    if (page.startsWith('/expense/update/')) return 'update';
-    return 'list';
+  triggerDelete(){
+    this.expenseFeatureService.setDeleteState();
   }
-
 }

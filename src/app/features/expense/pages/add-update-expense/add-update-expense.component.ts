@@ -15,11 +15,15 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { ExpenseStore } from '@app/shared/store/expense.store';
+import { ExpenseFeatureService } from '../../expense-feature.service';
+import { PageStateStore } from '@app/global/store/page-state.store';
+import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 
 @Component({
   selector: 'app-add-update-expense',
@@ -43,6 +47,9 @@ export class AddUpdateExpenseComponent implements OnInit {
   #fb = inject(FormBuilder);
   #router = inject(Router);
   readonly #expenseStore = inject(ExpenseStore);
+  readonly #dialog = inject(MatDialog);
+  readonly #expenseFeatureService = inject(ExpenseFeatureService);
+  readonly pageStateStore = inject(PageStateStore);
 
   formGroup = this.#fb.group({
     id: '',
@@ -92,6 +99,18 @@ export class AddUpdateExpenseComponent implements OnInit {
         this.goBack();
       })
     }
+  }
+
+  deleteDialog() {
+    const dialogRef = this.#dialog.open(DeleteConfirmationComponent, {
+      data: this.formGroup.value.description,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result === true) {
+        this.deleteExpense();
+      }
+    });
   }
 
 }
