@@ -9,6 +9,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
 import { ListCapitalComponent } from './pages/list-capital/list-capital.component';
 import { AddUpdateCapitalComponent } from './pages/add-update-capital/add-update-capital.component';
+import { PageParentComponent } from '@app/core/page-parent/page-parent.component';
+import { CapitalFeatureService } from './capital-feature.service';
+import { CommonButtonComponent } from '@app/shared/components/common-button/common-button.component';
 
 
 @Component({
@@ -21,53 +24,38 @@ import { AddUpdateCapitalComponent } from './pages/add-update-capital/add-update
     MatButtonModule,
     ListCapitalComponent,
     AddUpdateCapitalComponent,
+    CommonButtonComponent,
     RouterOutlet,
     RouterModule,
   ],
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
+    CapitalFeatureService,
   ],
   templateUrl: './capital.component.html',
-  styleUrl: './capital.component.scss',
-  animations: [
-    pageComponentAnimation,
+  styleUrls: [
+    './capital.component.scss', 
+    '/src/app/core/page-parent/page-parent.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CapitalComponent implements OnInit {
-  @HostBinding('class.content__page') pageClass = true;
-  @HostBinding('@routeAnimations') routeAnimations = true;
-
+export class CapitalComponent extends PageParentComponent implements OnInit {
   readonly store = inject(CapitalStore);
+  readonly capitalFeatureService = inject(CapitalFeatureService);
   title = 'Capital';
-  currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-  ){}
-
-  ngOnInit(): void { 
-    const currentUrl = this.route.snapshot?.url[0]?.path;
-    if(currentUrl === '/capital/add'){
-      this.currentPage.set('add');
-    }else{
-      this.currentPage.set('list');
-    }
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const currentRoute = event.urlAfterRedirects;
-        const currentPage = this.getCurrentPage(currentRoute);
-        this.currentPage.set(currentPage);
-      }
-    });
+  ){
+    super();
   }
 
-  getCurrentPage(page:string): 'add'|'update'|'list' {
-    if (page === '/capital/add') return 'add';
-    if (page.startsWith('/capital/update/')) return 'update';
-    return 'list';
+  ngOnInit(): void { 
+    this.setPageType();
+  }
+
+  triggerDelete(){
+    this.capitalFeatureService.setDeleteState();
   }
 
 }

@@ -16,16 +16,15 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { PageStateStore } from '@app/global/store/page-state.store';
+import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 import { IncomeStore } from '@app/shared/store/income.store';
 import { IncomeFeatureService } from '../../income-feature.service';
-import { MatDialog } from '@angular/material/dialog';
-import { NotificationService } from '@app/global/notification/notification.service';
-import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 
 @Component({
   selector: 'app-add-update-income',
@@ -68,8 +67,6 @@ export class AddUpdateIncomeComponent implements OnInit {
   @Input()
   set id(id: string) {
     this.incomeId = id;
-    const income = this._incomeStore.entities().find((v) => v.id === id)!;
-    this.formGroup.patchValue(income as any);
   }
 
   incomeId = '';
@@ -78,7 +75,15 @@ export class AddUpdateIncomeComponent implements OnInit {
     effect(()=>{
       if(this.#incomeFeatureService.deleteTrigger() === true)
         this.deleteDialog();
+      this.initFormGroup();
     })
+  }
+
+  initFormGroup() {
+    const income = this._incomeStore
+      .entities()
+      .find((v) => v.id === this.incomeId)!; // Use _liabilityStore
+    this.formGroup.patchValue(income as any);
   }
 
   ngOnInit(): void {}

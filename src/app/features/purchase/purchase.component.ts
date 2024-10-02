@@ -9,6 +9,9 @@ import { ListPurchaseComponent } from './pages/list-purchase/list-purchase.compo
 import { AddUpdatePurchaseComponent } from './pages/add-update-purchase/add-update-purchase.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { pageComponentAnimation } from '@app/shared/animations/general-animations';
+import { PurchaseFeatureService } from './purchase-feature.service';
+import { PageParentComponent } from '@app/core/page-parent/page-parent.component';
+import { CommonButtonComponent } from '@app/shared/components/common-button/common-button.component';
 
 
 @Component({
@@ -21,53 +24,38 @@ import { pageComponentAnimation } from '@app/shared/animations/general-animation
     MatButtonModule,
     ListPurchaseComponent,
     AddUpdatePurchaseComponent,
+    CommonButtonComponent,
     RouterOutlet,
     RouterModule,
   ],
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
+    PurchaseFeatureService,
   ],
   templateUrl: './purchase.component.html',
-  styleUrl: './purchase.component.scss',
-  animations: [
-    pageComponentAnimation,
+  styleUrls: [
+    './purchase.component.scss', 
+    '/src/app/core/page-parent/page-parent.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PurchaseComponent implements OnInit {
-  @HostBinding('class.content__page') pageClass = true;
-  @HostBinding('@routeAnimations') routeAnimations = true;
-
+export class PurchaseComponent extends PageParentComponent implements OnInit {
   readonly store = inject(PurchaseStore);
+  readonly purchaseFeatureService = inject(PurchaseFeatureService);
   title = 'Purchase';
-  currentPage = signal<'add'|'update'|'list'>('list');
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-  ){}
-
-  ngOnInit(): void { 
-    const currentUrl = this.route.snapshot?.url[0]?.path;
-    if(currentUrl === '/purchase/add'){
-      this.currentPage.set('add');
-    }else{
-      this.currentPage.set('list');
-    }
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const currentRoute = event.urlAfterRedirects;
-        const currentPage = this.getCurrentPage(currentRoute);
-        this.currentPage.set(currentPage);
-      }
-    });
+  ){
+    super();
   }
 
-  getCurrentPage(page:string): 'add'|'update'|'list' {
-    if (page === '/purchase/add') return 'add';
-    if (page.startsWith('/purchase/update/')) return 'update';
-    return 'list';
+  ngOnInit(): void { 
+    this.setPageType();
+  }
+
+  triggerDelete(){
+    this.purchaseFeatureService.setDeleteState();
   }
 
 }

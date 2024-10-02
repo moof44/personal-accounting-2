@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   Input,
   type OnInit,
@@ -40,7 +41,10 @@ import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmat
     ReactiveFormsModule,
   ],
   templateUrl: './add-update-expense.component.html',
-  styleUrl: './add-update-expense.component.scss',
+  styleUrls: [
+    './add-update-expense.component.scss', 
+    '/src/app/core/page-parent/add-update-page.component.scss'
+  ], 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUpdateExpenseComponent implements OnInit {
@@ -62,11 +66,24 @@ export class AddUpdateExpenseComponent implements OnInit {
   @Input()
   set id(id: string) {
     this.expenseId = id;
-    const expense = this.#expenseStore.entities().find((v) => v.id === id)!;
-    this.formGroup.patchValue(expense as any);
   }
 
   expenseId = '';
+
+  constructor(){
+    effect(()=>{
+      if(this.#expenseFeatureService.deleteTrigger() === true)
+        this.deleteDialog();
+      this.initFormGroup();
+    })
+  }
+
+  initFormGroup() {
+    const expense = this.#expenseStore
+      .entities()
+      .find((v) => v.id === this.expenseId)!; // Use _liabilityStore
+    this.formGroup.patchValue(expense as any);
+  }
 
   ngOnInit(): void {}
 
