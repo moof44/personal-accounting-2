@@ -16,6 +16,7 @@ import { SummaryStore } from './shared/store/summary.store';
 import { NotificationComponent } from './global/notification/notification.component';
 import { LoadingSpinnerComponent } from './global/directives/loading/loading-spinner.component';
 import { PageStateStore } from './global/store/page-state.store';
+import { SavingsStore } from './shared/store/savings.store';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,7 @@ import { PageStateStore } from './global/store/page-state.store';
     PurchaseStore, 
     SummaryStore,
     LiabilityStore,
+    SavingsStore,
     PageStateStore,
   ],
   templateUrl: './app.component.html',
@@ -50,6 +52,7 @@ export class AppComponent implements OnInit{
   readonly #purchaseStore = inject(PurchaseStore);
   readonly #summaryStore = inject(SummaryStore);
   readonly #liabilityStore = inject(LiabilityStore);
+  readonly #savingsStore = inject(SavingsStore);
   readonly #notification = inject(NotificationService);
   readonly #pageStateStore = inject(PageStateStore);
   #snackBar = inject(MatSnackBar);
@@ -94,5 +97,6 @@ export class AppComponent implements OnInit{
     this.#purchaseStore.loadPurchase('');
     this.#summaryStore.loadSummary('');
     this.#liabilityStore.loadLiability('');
+    this.#savingsStore.loadSavings('');
   }
 }

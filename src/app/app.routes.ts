@@ -197,6 +197,44 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'savings', // New route for Savings
+    loadComponent: () =>
+      import('./features/savings/savings.component').then(
+        (m) => m.SavingsComponent
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            './features/savings/pages/list-savings/list-savings.component'
+          ).then((m) => m.ListSavingsComponent),
+      },
+      {
+        matcher: (url: any) => {
+          if (
+            url.length >= 1 &&
+            (url[0].path === 'add' ||
+              (url[0].path.startsWith('update') && url[1]?.path))
+          ) {
+            const posParams = url[1]?.path
+              ? { id: new UrlSegment(url[1].path, {}) }
+              : { id: new UrlSegment('', {}) };
+            return {
+              consumed: url,
+              posParams,
+            };
+          }
+          return null;
+        },
+        loadComponent: () =>
+          import(
+            './features/savings/pages/add-update-savings/add-update-savings.component'
+          ).then((m) => m.AddUpdateSavingsComponent),
+      },
+    ],
+  },
+  {
     path: 'about',
     loadComponent: () =>
       import('./features/about/about.component').then((m) => m.AboutComponent),
