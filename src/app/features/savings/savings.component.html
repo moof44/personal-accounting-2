@@ -1,0 +1,21 @@
+<mat-card appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>
+            <h1>{{ title }}</h1>
+            <div class="button-actions">
+                @if(pageStateStore.type() === 'update'){
+                    <common-button type="delete" (click)="triggerDelete()" />
+                }
+                @if (pageStateStore.type() === 'list') {
+                    <common-button type="add" routerLink="./add" />
+                } @else {
+                    <common-button type="back" routerLink="./" />
+                }
+            </div>
+        </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+         <router-outlet></router-outlet>
+    </mat-card-content>
+</mat-card>

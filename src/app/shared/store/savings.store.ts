@@ -19,27 +19,27 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
-import { Capital } from '@app/models/capital.model';
 import { TableSettings } from '@app/models/global.model';
-import { CapitalService } from '@app/services/capital.service';
+import { Savings } from '@app/models/savings.model'; // Update import
+import { SavingsService } from '@app/services/savings.service';
 import { tapResponse } from '@ngrx/operators';
 import {
-  patchState,
-  signalStore,
-  signalStoreFeature,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState
+    patchState,
+    signalStore,
+    signalStoreFeature,
+    withComputed,
+    withHooks,
+    withMethods,
+    withState
 } from '@ngrx/signals';
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { map, pipe, switchMap } from 'rxjs';
 
-function withCapitalSettings() {
+function withSavingsSettings() { // Update function name
   return signalStoreFeature(
     withState<TableSettings>({
-      title: 'Capital',
+      title: 'Savings', // Update title
       filter: { 
         query: '', 
         order: 'asc', 
@@ -53,7 +53,7 @@ function withCapitalSettings() {
 }
 
 function withFilterEntities(
-  entities: Signal<Capital[]>, 
+  entities: Signal<Savings[]>, // Update type
   filter:any,
   withPagination=true,
 ) {
@@ -68,12 +68,12 @@ function withFilterEntities(
       return normalized;
     };
 
-    // Assuming Capital model has a 'date' property, adjust accordingly if not
+    // Assuming Savings model has a 'date' property, adjust accordingly if not
     if (filter.startDate() && filter.endDate()) {
       const startDate = normalizeDate(filter.startDate()!);
       const endDate = normalizeDate(filter.endDate()!);
-      const capitalDate = normalizeDate(v.date as Date); 
-      isDateRange = capitalDate >= startDate && capitalDate <= endDate;
+      const savingsDate = normalizeDate(v.date as Date); // Update variable name
+      isDateRange = savingsDate >= startDate && savingsDate <= endDate;
     };
 
     return isQuery && isDateRange;
@@ -87,9 +87,9 @@ function withFilterEntities(
   return allEntities;
 }
 
-export const CapitalStore = signalStore(
-  withEntities<Capital>(),
-  withCapitalSettings(),
+export const SavingsStore = signalStore( // Update store name
+  withEntities<Savings>(), // Update type
+  withSavingsSettings(), // Update function call
   withHooks({
     onInit(store) {},
     onDestroy(store) {},
@@ -100,17 +100,17 @@ export const CapitalStore = signalStore(
       return withFilterEntities(entities, filter);
     }),
   })),
-  withMethods((store, capitalService = inject(CapitalService)) => ({ // Inject CapitalService
-    loadCapital: rxMethod<any>( 
+  withMethods((store, savingsService = inject(SavingsService)) => ({ // Inject SavingsService
+    loadSavings: rxMethod<any>( // Update method name
       pipe(
         switchMap(() => {
-          return capitalService.capitalCollectionData$.pipe( // Assuming capitalCollectionData$ exists
-            map((capitals: any[]) =>
-              capitals.map((v) => ({ ...v, date: v.date.toDate() })) // Adjust if 'date' is not a property
+          return savingsService.savingsCollectionData$.pipe( // Update observable name
+            map((savingss: any[]) => // Update variable name
+              savingss.map((v) => ({ ...v, date: v.date.toDate() })) // Adjust if 'date' is not a property
             ),
             tapResponse({
-              next: (capitals) => {
-                patchState(store, setAllEntities(capitals as any[]));
+              next: (savingss) => { // Update variable name
+                patchState(store, setAllEntities(savingss as any[]));
               },
               error: () => console.error,
               complete: () => {},
@@ -119,14 +119,14 @@ export const CapitalStore = signalStore(
         })
       )
     ),
-    addCapital: (data: Partial<Capital>) => {
-      return capitalService.save(data); // Assuming 'save' method in CapitalService
+    addSavings: (data: Partial<Savings>) => { // Update method name and type
+      return savingsService.save(data); // Assuming 'save' method in SavingsService
     },
-    updateCapital: (id: string, data: Partial<Capital>) => {
-      return capitalService.update(id, data); // Assuming 'update' method
+    updateSavings: (id: string, data: Partial<Savings>) => { // Update method name and type
+      return savingsService.update(id, data); // Assuming 'update' method
     },
-    deleteCapital: (id: string) => {
-      return capitalService.delete(id); // Assuming 'delete' method
+    deleteSavings: (id: string) => { // Update method name
+      return savingsService.delete(id); // Assuming 'delete' method
     },
     setQueryFilter: (query: string) => {
       patchState(store, { filter: { ...store.filter(), query } }); // Using spread operator
