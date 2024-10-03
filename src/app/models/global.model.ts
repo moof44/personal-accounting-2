@@ -3,13 +3,16 @@ export interface NavigationMenu {
   link: string;
 }
 
-export interface FilterSettings {
+export interface FilterSettings extends _FilterPagination{
   query: string;
   order: 'asc' | 'desc';
   startDate: Date | null;
   endDate: Date | null;
-  currentPage: number; // Added for pagination
-  itemsPerPage: number; // Added for pagination
+}
+
+export interface _FilterPagination{
+  currentPage: number; 
+  itemsPerPage: number; 
 }
 
 export interface DisplayedColumns {

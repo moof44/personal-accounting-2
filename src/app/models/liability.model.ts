@@ -1,4 +1,4 @@
-import { DefaultFormEntry } from "./global.model";
+import { _FilterPagination, DefaultFormEntry, Pagination, TableSettings } from "./global.model";
 
 export interface Liability extends DefaultFormEntry{
     paymentHistory: PaymentHistory[],
@@ -6,6 +6,7 @@ export interface Liability extends DefaultFormEntry{
 
 export interface PaymentHistory{
     date: Date | string,
-    amount: number;
+    amount: number,
     payFrom: string, 
+    foreignId: string,
 }
