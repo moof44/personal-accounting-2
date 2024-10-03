@@ -62,7 +62,7 @@
 
 @if( pageStateStore.type() === 'update'){
 <div class="payment-container">
-  @if (dataSource.length > 0) {
+  @if (paymentHistory.length > 0) {
   <mat-accordion>
     <mat-expansion-panel
       (opened)="paymentHistoryOpenState.set(true)"
@@ -73,11 +73,12 @@
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <shared-common-table
-          [dataSource]="dataSource"
+          [dataSource]="dataSource()"
           [displayedColumns]="displayedColumns()"
           [dataCount]="paymentHistory.length"
           [withFilter]="false"
           [screensize]="mobileQuery.matches ? 'mobile' : 'desktop'"
+          (pagination)="onPageChange($event)"
         >
         </shared-common-table>
       </ng-template>

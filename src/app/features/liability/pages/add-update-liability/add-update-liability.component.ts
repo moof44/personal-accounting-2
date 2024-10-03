@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   effect,
   inject,
   Input,
@@ -82,8 +83,15 @@ export class AddUpdateLiabilityComponent implements OnInit {
   });
 
   liabilityId = ''; // Update property name
+  // table related
   paymentHistory: PaymentHistory[] = [];
-
+  current = signal(1);
+  pageSize = signal(5);
+  dataSource = computed(()=>{
+    const startIndex = (this.current() - 1) * this.pageSize();
+    const endIndex = startIndex + this.pageSize();
+    return this.paymentHistory.slice(startIndex, endIndex);
+  })
   #defaultColumns = [
     { column: 'date', header: 'Date', type: 'date' },
     { column: 'amount', header: 'Amount' },
@@ -92,7 +100,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
   displayedColumns = signal(this.#defaultColumns);
   itemsPerPage = signal(5);
   pageSizeOptions = signal([5, 10, 25]);
-  dataSource: PaymentHistory[] = [];
+  // dataSource: PaymentHistory[] = [];
 
   mobileQuery!: MediaQueryList;
   private _mobileQueryListener: () => void;
@@ -122,7 +130,7 @@ export class AddUpdateLiabilityComponent implements OnInit {
       .find((v) => v.id === this.liabilityId)!; // Use _liabilityStore
     this.formGroup.patchValue(liability as any);
     this.paymentHistory = liability?.paymentHistory || [];
-    this.dataSource = this.paymentHistory;
+    //this.dataSource = this.paymentHistory;
   }
 
   ngOnInit(): void {}
@@ -164,13 +172,14 @@ export class AddUpdateLiabilityComponent implements OnInit {
                 return caught;
               })
             )
-            .subscribe(() => {
+            .subscribe((v:any) => {
               // Handle success, e.g., show a notification
               const paymentHistory = this.paymentHistory!;
               paymentHistory.push({
                 date: new Date(),
                 amount: result.amount,
                 payFrom: 'cash',
+                foreignId: v.id,
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
@@ -206,12 +215,13 @@ export class AddUpdateLiabilityComponent implements OnInit {
                 return caught;
               })
             )
-            .subscribe(() => {
+            .subscribe((v:any) => {
               const paymentHistory = this.paymentHistory!;
               paymentHistory.push({
                 date: new Date(),
                 amount: result.amount,
                 payFrom: 'capital',
+                foreignId: v.id,
               });
               this.#liabilityStore
                 .updateLiability(this.liabilityId, {
@@ -241,7 +251,6 @@ export class AddUpdateLiabilityComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      console.log('result', result);
       if (result === true) {
         this.deleteLiability();
       }
@@ -274,7 +283,6 @@ export class AddUpdateLiabilityComponent implements OnInit {
   }
 
   deleteLiability() {
-    console.log('liabilityId', this.liabilityId);
     if (this.liabilityId) {
       this.#liabilityStore.deleteLiability(this.liabilityId).subscribe((v) => {
         this.goBack();
@@ -284,5 +292,10 @@ export class AddUpdateLiabilityComponent implements OnInit {
 
   get amount(){
     return this.formGroup.controls.amount;
+  }
+
+  onPageChange({ current, pageSize }: any) {
+    this.current.set(current);
+    this.pageSize.set(pageSize);
   }
 }
