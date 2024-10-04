@@ -14,6 +14,7 @@ import { Income } from '@app/models/income.model';
 import { finalize, from, Observable } from 'rxjs';
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { NotificationService } from '@app/global/notification/notification.service';
+import { CollectionNames } from '@app/models/global.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ import { NotificationService } from '@app/global/notification/notification.servi
  * Service for managing income with Firestore.
  */
 export class IncomeService {
-  private _incomeCollectionName = 'income';
+  private _incomeCollectionName = CollectionNames.income;
   private _incomeCollection!: CollectionReference;
   #loadingService = inject(LoadingService);
   #notificationService = inject(NotificationService);

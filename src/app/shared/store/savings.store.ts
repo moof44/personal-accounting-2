@@ -19,7 +19,9 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
+import { Expense } from '@app/models/expense.model';
 import { TableSettings } from '@app/models/global.model';
+import { Purchase } from '@app/models/purchase.model';
 import { Savings } from '@app/models/savings.model'; // Update import
 import { SavingsService } from '@app/services/savings.service';
 import { tapResponse } from '@ngrx/operators';
@@ -142,6 +144,24 @@ export const SavingsStore = signalStore( // Update store name
     },
     setItemsPerPage: (itemsPerPage: number) => {
       patchState(store, { filter: { ...store.filter(), itemsPerPage } });
-    }
+    },
+    saveExpenseAndSavings: (expense: Partial<Expense>, savings: Partial<Savings>) => {
+      return savingsService.saveExpenseAndSavings(expense, savings);
+    },
+    savePurchaseAndSavings: (purchase: Partial<Purchase>, savings: Partial<Savings>) => {
+      return savingsService.savePurchaseAndSavings(purchase, savings);
+    },
+    updateExpenseAndSavings: (expenseId: string, expense: Partial<Expense>, savingsId: string, savings: Partial<Savings>) => {
+      return savingsService.updateExpenseAndSavings(expenseId, expense, savingsId, savings);
+    },
+    updatePurchaseAndSavings: (purchaseId: string, purchase: Partial<Purchase>, savingsId: string, savings: Partial<Savings>) => {
+      return savingsService.updatePurchaseAndSavings(purchaseId, purchase, savingsId, savings);
+    },
+    deleteExpenseAndSavings: (expenseId: string, savingsId: string) => {
+      return savingsService.deleteExpenseAndSavings(expenseId, savingsId);
+    },
+    deletePurchaseAndSavings: (purchaseId: string, savingsId: string) => {
+      return savingsService.deletePurchaseAndSavings(purchaseId, savingsId);
+    },
   }))
 );

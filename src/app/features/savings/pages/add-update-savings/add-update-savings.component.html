@@ -19,7 +19,11 @@
   
       <mat-form-field class="input-form__input">
         <mat-label>Description</mat-label>
-        <input matInput formControlName="description" />
+        <mat-select formControlName="description">
+          @for (source of sourceOption; track source; ) {
+            <mat-option [value]="source">{{source | titlecase}}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
   
       <mat-form-field class="input-form__input">

@@ -15,6 +15,7 @@ import { finalize, from, Observable } from 'rxjs';
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { inject } from '@angular/core';
 import { NotificationService } from '@app/global/notification/notification.service';
+import { CollectionNames } from '@app/models/global.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ import { NotificationService } from '@app/global/notification/notification.servi
  * Service for managing capital with Firestore.
  */
 export class CapitalService {
-  private _capitalCollectionName = 'capital'; // Assuming 'capital' is your collection name
+  private _capitalCollectionName = CollectionNames.capital;
   private _capitalCollection!: CollectionReference;
 
   readonly capitalCollectionData$: Observable<Capital[]>;

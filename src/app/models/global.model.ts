@@ -59,3 +59,13 @@ export interface ServiceFeatureState{
   delete?: boolean,
   deleteConfirmation?: boolean,
 }
+
+export enum CollectionNames{
+  'capital' = 'capital',
+  'expense' = 'expense',
+  'income' = 'income',
+  'liability' = 'liability',
+  'purchase' = 'purchase',
+  'savings' = 'savings',
+  'summary' = 'summary',
+}
