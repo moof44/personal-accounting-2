@@ -25,6 +25,8 @@ It was observed that Angular suggest the following features:
 2. Installed with Angular-PWA / Service Worker
 3. Implemented component and service inheritance - application of DRY principles
 4. Implemented reusable components - reduced redundancy by 70%
+5. Batch save, update and delete of firestore
+6. Firebase function implementation
 
 ### Problems encountered
 
