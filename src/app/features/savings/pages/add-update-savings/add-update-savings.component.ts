@@ -25,6 +25,10 @@ import { SavingsStore } from '@app/shared/store/savings.store'; // Update import
 import { SavingsFeatureService } from '../../savings-feature.service'; // Update import
 import { PageStateStore } from '@app/global/store/page-state.store';
 import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
+import { MatSelectModule } from '@angular/material/select';
+import { Savings, SavingsSource } from '@app/models/savings.model';
+import { catchError, switchMap } from 'rxjs';
+import { NotificationService } from '@app/global/notification/notification.service';
 
 @Component({
   selector: 'app-add-update-savings', // Update selector
@@ -38,29 +42,39 @@ import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmat
     MatIconModule,
     MatDatepickerModule,
     MatCardModule,
+    MatSelectModule,
     ReactiveFormsModule,
   ],
   templateUrl: './add-update-savings.component.html', // Update templateUrl
   styleUrls: [
     './add-update-savings.component.scss',
-    '/src/app/core/page-parent/add-update-page.component.scss'
+    '/src/app/core/page-parent/add-update-page.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddUpdateSavingsComponent implements OnInit { // Update component name
+export class AddUpdateSavingsComponent implements OnInit {
+  // Update component name
   private _fb = inject(FormBuilder);
   private _router = inject(Router);
   private readonly _savingsStore = inject(SavingsStore); // Inject SavingsStore
   readonly #dialog = inject(MatDialog);
   readonly #savingsFeatureService = inject(SavingsFeatureService); // Inject SavingsFeatureService
+  readonly #notificationService = inject(NotificationService);
   readonly pageStateStore = inject(PageStateStore);
+
+  sourceOption: SavingsSource[] = [
+    SavingsSource.Income,
+    SavingsSource.Capital,
+    SavingsSource.Others,
+  ];
 
   formGroup = this._fb.group({
     id: '',
     date: [new Date(), Validators.required],
-    description: ['Meralo', Validators.required], // Consider changing the default value
+    description: ['income', Validators.required], // Consider changing the default value
     amount: [1000, Validators.required],
     remarks: '',
+    foreignId: '',
   });
 
   @Input()
@@ -72,7 +86,8 @@ export class AddUpdateSavingsComponent implements OnInit { // Update component n
 
   constructor() {
     effect(() => {
-      if (this.#savingsFeatureService.deleteTrigger() === true) // Update method call
+      if (this.#savingsFeatureService.deleteTrigger() === true)
+        // Update method call
         this.deleteDialog();
       this.initFormGroup();
     });
@@ -93,29 +108,93 @@ export class AddUpdateSavingsComponent implements OnInit { // Update component n
 
   onSubmit() {
     if (this.formGroup.valid) {
-      if (this.savingsId) { // Check savingsId
-        this._savingsStore // Use _savingsStore
-          .updateSavings(this.savingsId, this.formGroup.value as any) // Use updateSavings
-          .subscribe((v) => {
-            this.goBack();
-          });
+      const description = this.formGroup.value.description;
+      const date = this.formGroup.value.date as Date;
+      const amount = this.formGroup.value.amount as number;
+      const remarks = this.formGroup.value.remarks as string;
+      const foreignId = this.formGroup.value.foreignId as string;
+      const foreignDescription = `Savings from ${description}`;
+
+      if (this.savingsId) {
+        console.log('Updating savings', this.formGroup.value);
+        // Check savingsId
+        // this._savingsStore // Use _savingsStore
+        //   .updateSavings(this.savingsId, this.formGroup.value as any) // Use updateSavings
+        //   .subscribe((v) => {
+        //     this.goBack();
+        //   });
+        if (description === SavingsSource.Income) {
+          this._savingsStore
+            .updateExpenseAndSavings(
+              foreignId,
+              { date, description: foreignDescription, amount, remarks },
+              this.savingsId,
+              this.formGroup.value as unknown as Partial<Savings>
+            )
+            .subscribe(() => {
+              this.goBack();
+            });
+        } else if (description === SavingsSource.Capital) {
+          this._savingsStore
+            .updatePurchaseAndSavings(
+              foreignId,
+              { date, description: foreignDescription, amount, remarks },
+              this.savingsId,
+              this.formGroup.value as unknown as Partial<Savings>
+            )
+            .subscribe(() => this.goBack());
+        } else {
+          this._savingsStore
+            .updateSavings(this.savingsId, this.formGroup.value as any)
+            .subscribe(() => {
+              this.goBack();
+            });
+        }
       } else {
-        this._savingsStore // Use _savingsStore
-          .addSavings(this.formGroup.value as any) // Use addSavings
-          .subscribe((v) => {
-            if (v) this.goBack();
-          });
+        if (description === SavingsSource.Income) {
+          this._savingsStore
+            .saveExpenseAndSavings(
+              { date, description: foreignDescription, amount, remarks },
+              this.formGroup.value as unknown as Partial<Savings>
+            )
+            .subscribe(() => this.goBack());
+        } else if (description === SavingsSource.Capital) {
+          this._savingsStore
+            .savePurchaseAndSavings(
+              { date, description: foreignDescription, amount, remarks },
+              this.formGroup.value as unknown as Partial<Savings>
+            )
+            .subscribe(() => this.goBack());
+        } else {
+          this._savingsStore
+            .addSavings(this.formGroup.value as any)
+            .subscribe(() => this.goBack());
+        }
       }
     } else {
       // Handle form errors if needed
     }
   }
 
-  deleteSavings() { // Update method name
-    if (this.savingsId) { // Check savingsId
-      this._savingsStore.deleteSavings(this.savingsId).subscribe((v) => { // Use deleteSavings
-        this.goBack();
-      });
+  deleteSavings() {
+    // Update method name
+    if (this.savingsId) {
+      const description = this.formGroup.value.description;
+      // Check savingsId
+      
+      if(description == 'income'){
+        this._savingsStore.deleteExpenseAndSavings(this.formGroup.value.foreignId!, this.savingsId).subscribe((v) => {
+          this.goBack();
+        });
+      }else if(description == 'purchase'){
+        this._savingsStore.deletePurchaseAndSavings(this.formGroup.value.foreignId!, this.savingsId).subscribe((v) => {
+          this.goBack();
+        })
+      }else{
+        this._savingsStore.deleteSavings(this.savingsId).subscribe((v) => {
+          this.goBack();
+        });
+      }
     }
   }
 

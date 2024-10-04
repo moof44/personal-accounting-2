@@ -14,6 +14,7 @@ import { Purchase } from '@app/models/purchase.model';
 import { finalize, from, Observable } from 'rxjs';
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { NotificationService } from '@app/global/notification/notification.service';
+import { CollectionNames } from '@app/models/global.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ import { NotificationService } from '@app/global/notification/notification.servi
  * Service for managing purchases with Firestore.
  */
 export class PurchaseService {
-  private _purchaseCollectionName = 'purchase';
+  private _purchaseCollectionName = CollectionNames.purchase;
   private _purchaseCollection!: CollectionReference;
   #loadingService = inject(LoadingService);
   #notificationService = inject(NotificationService);

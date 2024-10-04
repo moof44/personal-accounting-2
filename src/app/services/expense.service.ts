@@ -13,6 +13,7 @@ import {
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { NotificationService } from '@app/global/notification/notification.service';
 import { Expense } from '@app/models/expense.model';
+import { CollectionNames } from '@app/models/global.model';
 import { finalize, from, Observable } from 'rxjs';
 
 @Injectable({
@@ -22,7 +23,7 @@ import { finalize, from, Observable } from 'rxjs';
  * Service for managing expenses with Firestore.
  */
 export class ExpenseService {
-  private _expenseCollectionName = 'expense';
+  private _expenseCollectionName = CollectionNames.expense;
   private _expenseCollection!: CollectionReference;
   #loadingService = inject(LoadingService);
   #notificationService = inject(NotificationService);

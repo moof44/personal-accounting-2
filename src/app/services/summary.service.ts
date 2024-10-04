@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, CollectionReference, Firestore } from '@angular/fire/firestore';
+import { CollectionNames } from '@app/models/global.model';
 import { Summary } from '@app/models/summary.model';
 import { Observable } from 'rxjs';
 
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class SummaryService { 
 
-  private _summaryCollectionName = 'summary';
+  private _summaryCollectionName = CollectionNames.summary;
   private _summaryCollection!: CollectionReference;
   readonly summaryCollectionData$:Observable<Summary[]>;
 

@@ -14,6 +14,7 @@ import { finalize, from, Observable } from 'rxjs';
 import { Liability } from '../models/liability.model';
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { NotificationService } from '@app/global/notification/notification.service';
+import { CollectionNames } from '@app/models/global.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ import { NotificationService } from '@app/global/notification/notification.servi
  * Service for managing liability with Firestore.
  */
 export class LiabilityService {
-  private _liabilityCollectionName = 'liability';
+  private _liabilityCollectionName = CollectionNames.liability;
   private _liabilityCollection!: CollectionReference;
   #loadingService = inject(LoadingService);
   #notificationService = inject(NotificationService);
