@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 import { DisableDirective } from '@app/global/directives/loading/disable.directive';
 import { NotificationService } from '@app/global/notification/notification.service';
 import { PageStateStore } from '@app/global/store/page-state.store';
-import { PaymentHistory } from '@app/models/liability.model';
+import { Liability, PaymentHistory } from '@app/models/liability.model';
 import { CommonTableComponent } from '@app/shared/components/common-table/common-table.component';
 import { DeleteConfirmationComponent } from '@app/shared/dialog/delete-confirmation/delete-confirmation.component';
 import { PayLiabilityOutputData } from '@app/shared/dialog/dialog.model';
@@ -149,94 +149,48 @@ export class AddUpdateLiabilityComponent implements OnInit {
         return;
       }
 
-      let successMessage = '';
-      successMessage = `Payment has been successfully credited.`;
+      let successMessage = `Payment has been successfully credited.`;
+      const foreignData = {
+        date: new Date(), // Or get the date from your form
+        description: 'Payment for ' + this.formGroup.value.description, // Dynamic description
+        amount: result.amount,
+        remarks: `Paid from ${result.payFrom}`, // Optional remarks
+      }
+      const paymentHistory = {
+        date: new Date(),
+        amount: result.amount,
+        payFrom: result.payFrom,
+        foreignId: '',
+      }
 
       switch (result.payFrom) {
         case 'cash':
-          this.#liabilityFeatureService
-            .createExpense({
-              date: new Date(), // Or get the date from your form
-              description: 'Payment for ' + this.formGroup.value.description, // Dynamic description
-              amount: result.amount,
-              remarks: 'Paid from cash', // Optional remarks
-            })
-            .pipe(
-              catchError((err, caught) => {
-                this.#notificationService.showNotification(
-                  'create',
-                  'error',
-                  undefined,
-                  'payment'
-                );
-                return caught;
-              })
-            )
-            .subscribe((v:any) => {
-              // Handle success, e.g., show a notification
-              const paymentHistory = this.paymentHistory!;
-              paymentHistory.push({
-                date: new Date(),
-                amount: result.amount,
-                payFrom: 'cash',
-                foreignId: v.id,
-              });
-              this.#liabilityStore
-                .updateLiability(this.liabilityId, {
-                  amount: this.formGroup.value.amount! - result.amount,
-                  paymentHistory,
-                })
-                .subscribe(() => {
-                  this.#notificationService.showNotification(
-                    'custom',
-                    'success',
-                    undefined,
-                    successMessage
-                  );
-                });
-            });
+          this.#liabilityStore.saveExpenseAndLiability(
+            foreignData,
+            this.formGroup.value as unknown as Partial<Liability>,
+            paymentHistory
+          ).subscribe(()=>{
+            this.#notificationService.showNotification(
+              'custom',
+              'success',
+              undefined,
+              successMessage
+            );
+          })
           break;
         case 'capital':
-          this.#liabilityFeatureService
-            .createPurchase({
-              date: new Date(),
-              description: 'Liability payment using capital',
-              amount: result.amount,
-              remarks: 'Deducted from capital',
-            })
-            .pipe(
-              catchError((err, caught) => {
-                this.#notificationService.showNotification(
-                  'create',
-                  'error',
-                  undefined,
-                  'payment'
-                );
-                return caught;
-              })
-            )
-            .subscribe((v:any) => {
-              const paymentHistory = this.paymentHistory!;
-              paymentHistory.push({
-                date: new Date(),
-                amount: result.amount,
-                payFrom: 'capital',
-                foreignId: v.id,
-              });
-              this.#liabilityStore
-                .updateLiability(this.liabilityId, {
-                  amount: this.formGroup.value.amount! - result.amount,
-                  paymentHistory,
-                })
-                .subscribe(() => {
-                  this.#notificationService.showNotification(
-                    'custom',
-                    'success',
-                    undefined,
-                    successMessage
-                  );
-                });
-            });
+          this.#liabilityStore.savePurchaseAndLiability(
+            foreignData,
+            this.formGroup.value as unknown as Partial<Liability>,
+            paymentHistory
+          ).subscribe(()=>{
+            this.#notificationService.showNotification(
+              'custom',
+              'success',
+              undefined,
+              successMessage
+            );
+          })
           break;
         default:
           // default to cash

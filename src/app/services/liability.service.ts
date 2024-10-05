@@ -11,10 +11,13 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { finalize, from, Observable } from 'rxjs';
-import { Liability } from '../models/liability.model';
+import { Liability, PaymentHistory } from '../models/liability.model';
 import { LoadingService } from '@app/global/directives/loading/loading.service';
 import { NotificationService } from '@app/global/notification/notification.service';
 import { CollectionNames } from '@app/models/global.model';
+import { ParentBatchExpensePurchaseService } from '@app/core/service-parent/parent-batch-expense-purchase.service';
+import { Expense } from '@app/models/expense.model';
+import { Purchase } from '@app/models/purchase.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +25,7 @@ import { CollectionNames } from '@app/models/global.model';
 /**
  * Service for managing liability with Firestore.
  */
-export class LiabilityService {
+export class LiabilityService extends ParentBatchExpensePurchaseService {
   private _liabilityCollectionName = CollectionNames.liability;
   private _liabilityCollection!: CollectionReference;
   #loadingService = inject(LoadingService);
@@ -37,17 +40,15 @@ export class LiabilityService {
    * Constructor for LiabilityService.
    * @param _firestore - Firestore instance.
    */
-  constructor(private _firestore: Firestore) {
+  constructor() {
+    super();
     this._liabilityCollection = collection(
       this._firestore,
       this._liabilityCollectionName
     );
-    this.liabilityCollectionData$ = collectionData(
-      this._liabilityCollection,
-      {
-        idField: 'id',
-      }
-    ) as Observable<Liability[]>;
+    this.liabilityCollectionData$ = collectionData(this._liabilityCollection, {
+      idField: 'id',
+    }) as Observable<Liability[]>;
   }
 
   /**
@@ -106,4 +107,93 @@ export class LiabilityService {
   #finalize() {
     return finalize(() => this.#loadingService.setLoading(false));
   }
+
+  // SAVINGS BATCH OPERATION
+
+  setBatchLiability(data: Partial<Liability>) {
+    const docRef = doc(
+      collection(this._firestore, this._liabilityCollectionName)
+    );
+    this._batch.set(docRef, data);
+    return docRef.id;
+  }
+
+  updateBatchLiability(id: string, data: Partial<Liability>) {
+    const docRef = doc(this._firestore, this._liabilityCollectionName, id);
+    this._batch.update(docRef, data);
+  }
+
+  deleteBatchLiability(id: string) {
+    const docRef = doc(this._firestore, this._liabilityCollectionName, id);
+    this._batch.delete(docRef);
+  }
+
+  // END SAVINGS BATCH OPERATION
+
+  // BATCH CODES COMBINATIONS
+  saveExpenseAndSavings(
+    expense: Partial<Expense>,
+    liability: Partial<Liability>,
+    paymentHistory: PaymentHistory
+  ) {
+    this.startBatch();
+    const expenseId = this.setBatchExpense(expense);
+    paymentHistory.foreignId = expenseId;
+    liability.paymentHistory!.push(paymentHistory);
+    this.setBatchLiability(liability);
+    return this.endBatch('create');
+  }
+
+  savePurchaseAndSavings(
+    purchase: Partial<Purchase>,
+    liability: Partial<Liability>,
+    paymentHistory: PaymentHistory
+  ) {
+    this.startBatch();
+    const purchaseId = this.setBatchPurchase(purchase);
+    paymentHistory.foreignId = purchaseId;
+    liability.paymentHistory!.push(paymentHistory);
+    this.setBatchLiability(liability);
+    return this.endBatch('create');
+  }
+
+  updateExpenseAndSavings(
+    expenseId: string,
+    expense: Partial<Expense>,
+    savingsId: string,
+    savings: Partial<Liability>
+  ) {
+    this.startBatch();
+    this.updateBatchExpense(expenseId, expense);
+    this.updateBatchLiability(savingsId, savings);
+    return this.endBatch('update');
+  }
+
+  updatePurchaseAndSavings(
+    purchaseId: string,
+    purchase: Partial<Purchase>,
+    savingsId: string,
+    savings: Partial<Liability>
+  ) {
+    this.startBatch();
+    this.updateBatchPurchase(purchaseId, purchase);
+    this.updateBatchLiability(savingsId, savings);
+    return this.endBatch('update');
+  }
+
+  deleteExpenseAndSavings(expenseId: string, savingsId: string) {
+    this.startBatch();
+    this.deleteBatchExpense(expenseId);
+    this.deleteBatchLiability(savingsId);
+    return this.endBatch('delete');
+  }
+
+  deletePurchaseAndSavings(purchaseId: string, savingsId: string) {
+    this.startBatch();
+    this.deleteBatchPurchase(purchaseId);
+    this.deleteBatchLiability(savingsId);
+    return this.endBatch('delete');
+  }
+
+  // END BATCH CODES COMBINATIONS
 }

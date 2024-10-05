@@ -19,6 +19,7 @@ import { NotificationService } from '@app/global/notification/notification.servi
 import { CollectionNames } from '@app/models/global.model';
 import { Purchase } from '@app/models/purchase.model';
 import { Expense } from '@app/models/expense.model';
+import { ParentBatchExpensePurchaseService } from '@app/core/service-parent/parent-batch-expense-purchase.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,13 +27,12 @@ import { Expense } from '@app/models/expense.model';
 /**
  * Service for managing savings with Firestore.
  */
-export class SavingsService {
+export class SavingsService extends ParentBatchExpensePurchaseService{
   // Update class name
   private _savingsCollectionName = CollectionNames.savings; // Update collection name
-  private _purchaseCollectionName = CollectionNames.purchase;
-  private _expenseCollectionName = CollectionNames.expense;
+
   private _savingsCollection!: CollectionReference; // Update variable name
-  private _batch!: WriteBatch;
+
 
   readonly savingsCollectionData$: Observable<Savings[]>; // Update observable name and type
   #loadingService = inject(LoadingService);
@@ -42,7 +42,8 @@ export class SavingsService {
    * Constructor for SavingsService.
    * @param _firestore - Firestore instance.
    */
-  constructor(private _firestore: Firestore) {
+  constructor() {
+    super();
     this._savingsCollection = collection(
       // Update variable name
       this._firestore,
@@ -112,12 +113,6 @@ export class SavingsService {
     return finalize(() => this.#loadingService.setLoading(false));
   }
 
-  // BASIC BATCH CODES
-
-  startBatch() {
-    this._batch = writeBatch(this._firestore);
-  }
-
   // Savings Batch Operations
 
   setBatchSavings(data: Partial<Savings>) {
@@ -136,52 +131,6 @@ export class SavingsService {
     this._batch.delete(docRef);
   }
 
-  // Expense Batch Operations
-  setBatchExpense(data: Partial<Expense>) {
-    const docRef = doc(collection(this._firestore, this._expenseCollectionName));
-    this._batch.set(docRef, data);
-    return docRef.id;
-  }
-
-  updateBatchExpense(id: string, data: Partial<Expense>) {
-    const docRef = doc(this._firestore, this._expenseCollectionName, id);
-    this._batch.update(docRef, data);
-  }
-
-  deleteBatchExpense(id: string) {
-    const docRef = doc(this._firestore, this._expenseCollectionName, id);
-    this._batch.delete(docRef);
-  }
-
-  // Purchase Batch Operations
-  setBatchPurchase(data: Partial<Purchase>) {
-    const docRef = doc(collection(this._firestore, this._purchaseCollectionName));
-    this._batch.set(docRef, data);
-    return docRef.id;
-  }
-
-  updateBatchPurchase(id: string, data: Partial<Purchase>) {
-    const docRef = doc(this._firestore, this._purchaseCollectionName, id);
-    this._batch.update(docRef, data);
-  }
-
-  deleteBatchPurchase(id: string) {
-    const docRef = doc(this._firestore, this._purchaseCollectionName, id);
-    this._batch.delete(docRef);
-  }
-
-  endBatch(type: 'create' | 'update' | 'delete' = 'create') {
-    return from(
-        this._batch.commit()
-        .then((resp: any) => resp)
-        .catch((e) => {
-          this.#notificationService.showNotification(type, 'error');
-        })
-      )
-      .pipe(this.#finalize());
-  }
-
-  // END BASIC BATCH CODES
 
   // BATCH CODES COMBINATIONS
   saveExpenseAndSavings(expense: Partial<Expense>, savings: Partial<Savings>){
@@ -203,7 +152,7 @@ export class SavingsService {
   updateExpenseAndSavings(expenseId: string, expense: Partial<Expense>, savingsId: string, savings: Partial<Savings>){
     this.startBatch();
     this.updateBatchExpense(expenseId, expense);
-    savings.foreignId = expenseId;
+    // savings.foreignId = expenseId;
     this.updateBatchSavings(savingsId, savings)
     return this.endBatch('update');
   }
@@ -211,7 +160,7 @@ export class SavingsService {
   updatePurchaseAndSavings(purchaseId: string, purchase: Partial<Purchase>, savingsId: string, savings: Partial<Savings>){
     this.startBatch();
     this.updateBatchPurchase(purchaseId, purchase);
-    savings.foreignId = purchaseId;
+    // savings.foreignId = purchaseId;
     this.updateBatchSavings(savingsId, savings)
     return this.endBatch('update');
   }

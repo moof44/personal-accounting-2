@@ -66,7 +66,7 @@ export class ListSavingsComponent implements OnInit { // Update component name
   // Update columns based on Savings model
   #defaultColumns = [
     { column: 'date', header: 'Date', type: 'date' },
-    { column: 'description', header: 'Description' },
+    { column: 'description', header: 'Source' },
     { column: 'amount', header: 'Amount' },
   ];
   #additionalColumn = { column: 'remarks', header: 'Remarks' };
