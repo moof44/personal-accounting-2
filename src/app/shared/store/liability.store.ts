@@ -19,8 +19,10 @@
  */
 
 import { computed, inject, Signal } from '@angular/core';
+import { Expense } from '@app/models/expense.model';
 import { TableSettings } from '@app/models/global.model';
-import { Liability } from '@app/models/liability.model';
+import { Liability, PaymentHistory } from '@app/models/liability.model';
+import { Purchase } from '@app/models/purchase.model';
 import { LiabilityService } from '@app/services/liability.service';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -142,6 +144,24 @@ export const LiabilityStore = signalStore(
     },
     setItemsPerPage: (itemsPerPage: number) => {
       patchState(store, { filter: { ...store.filter(), itemsPerPage } });
-    }
+    },
+    saveExpenseAndLiability: (expense: Partial<Expense>, liability: Partial<Liability>, paymentHistory: PaymentHistory) => {
+      return liabilityService.saveExpenseAndSavings(expense, liability, paymentHistory);
+    },
+    savePurchaseAndLiability: (purchase: Partial<Purchase>, liability: Partial<Liability>, paymentHistory: PaymentHistory) => {
+      return liabilityService.savePurchaseAndSavings(purchase, liability, paymentHistory);
+    },
+    updateExpenseAndLiability: (expenseId: string, expense: Partial<Expense>, liabilityId: string, liability: Partial<Liability>) => {
+      return liabilityService.updateExpenseAndSavings(expenseId, expense, liabilityId, liability);
+    },
+    updatePurchaseAndLiability: (purchaseId: string, purchase: Partial<Purchase>, liabilityId: string, liability: Partial<Liability>) => {
+      return liabilityService.updatePurchaseAndSavings(purchaseId, purchase, liabilityId, liability);
+    },
+    deleteExpenseAndLiability: (expenseId: string, liabilityId: string) => {
+      return liabilityService.deleteExpenseAndSavings(expenseId, liabilityId);
+    },
+    deletePurchaseAndLiability: (purchaseId: string, liabilityId: string) => {
+      return liabilityService.deletePurchaseAndSavings(purchaseId, liabilityId);
+    },
   }))
 );

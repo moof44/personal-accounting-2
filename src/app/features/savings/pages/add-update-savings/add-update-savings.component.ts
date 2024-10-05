@@ -116,13 +116,6 @@ export class AddUpdateSavingsComponent implements OnInit {
       const foreignDescription = `Savings from ${description}`;
 
       if (this.savingsId) {
-        console.log('Updating savings', this.formGroup.value);
-        // Check savingsId
-        // this._savingsStore // Use _savingsStore
-        //   .updateSavings(this.savingsId, this.formGroup.value as any) // Use updateSavings
-        //   .subscribe((v) => {
-        //     this.goBack();
-        //   });
         if (description === SavingsSource.Income) {
           this._savingsStore
             .updateExpenseAndSavings(
@@ -132,6 +125,7 @@ export class AddUpdateSavingsComponent implements OnInit {
               this.formGroup.value as unknown as Partial<Savings>
             )
             .subscribe(() => {
+              this.handleNotification('update');
               this.goBack();
             });
         } else if (description === SavingsSource.Capital) {
@@ -142,11 +136,15 @@ export class AddUpdateSavingsComponent implements OnInit {
               this.savingsId,
               this.formGroup.value as unknown as Partial<Savings>
             )
-            .subscribe(() => this.goBack());
+            .subscribe(() => {
+              this.handleNotification('update');
+              this.goBack()
+            });
         } else {
           this._savingsStore
             .updateSavings(this.savingsId, this.formGroup.value as any)
             .subscribe(() => {
+              this.handleNotification('update');
               this.goBack();
             });
         }
@@ -157,18 +155,27 @@ export class AddUpdateSavingsComponent implements OnInit {
               { date, description: foreignDescription, amount, remarks },
               this.formGroup.value as unknown as Partial<Savings>
             )
-            .subscribe(() => this.goBack());
+            .subscribe(() => {
+              this.handleNotification('create');
+              this.goBack()
+            });
         } else if (description === SavingsSource.Capital) {
           this._savingsStore
             .savePurchaseAndSavings(
               { date, description: foreignDescription, amount, remarks },
               this.formGroup.value as unknown as Partial<Savings>
             )
-            .subscribe(() => this.goBack());
+            .subscribe(() => {
+              this.handleNotification('create');
+              this.goBack()
+            });
         } else {
           this._savingsStore
             .addSavings(this.formGroup.value as any)
-            .subscribe(() => this.goBack());
+            .subscribe(() => {
+              this.handleNotification('create');
+              this.goBack()
+            });
         }
       }
     } else {
@@ -180,18 +187,20 @@ export class AddUpdateSavingsComponent implements OnInit {
     // Update method name
     if (this.savingsId) {
       const description = this.formGroup.value.description;
-      // Check savingsId
       
       if(description == 'income'){
         this._savingsStore.deleteExpenseAndSavings(this.formGroup.value.foreignId!, this.savingsId).subscribe((v) => {
+          this.handleNotification('delete');
           this.goBack();
         });
       }else if(description == 'purchase'){
         this._savingsStore.deletePurchaseAndSavings(this.formGroup.value.foreignId!, this.savingsId).subscribe((v) => {
+          this.handleNotification('delete');
           this.goBack();
         })
       }else{
         this._savingsStore.deleteSavings(this.savingsId).subscribe((v) => {
+          this.handleNotification('delete');
           this.goBack();
         });
       }
@@ -208,5 +217,14 @@ export class AddUpdateSavingsComponent implements OnInit {
         this.deleteSavings(); // Update method call
       }
     });
+  }
+
+  handleNotification(type: 'create'|'update'|'delete'){
+    this.#notificationService.showNotification(
+      type,
+      'success',
+      undefined,
+      'Savings'
+    );
   }
 }
