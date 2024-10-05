@@ -1,6 +1,7 @@
 export interface NavigationMenu {
   label: string;
   link: string;
+  icon: string;
 }
 
 export interface FilterSettings extends _FilterPagination{

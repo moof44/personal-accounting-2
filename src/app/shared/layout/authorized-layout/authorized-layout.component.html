@@ -37,9 +37,9 @@
     <!-- [mode]="mobileQuery.matches ? 'over' : 'side'" -->
     <mat-nav-list>
       @for (nav of fillerNav2; track nav) {
-      <a mat-list-item routerLink="{{ nav.link }}" (click)="snav.close()">{{
-        nav.label
-      }}</a>
+      <a mat-list-item routerLink="{{ nav.link }}" (click)="snav.close()">
+        <mat-icon>{{ nav.icon }}</mat-icon> {{ nav.label }} 
+      </a>
       }
     </mat-nav-list>
   </mat-sidenav>
