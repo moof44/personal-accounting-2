@@ -140,7 +140,8 @@ export class LiabilityService extends ParentBatchExpensePurchaseService {
     const expenseId = this.setBatchExpense(expense);
     paymentHistory.foreignId = expenseId;
     liability.paymentHistory!.push(paymentHistory);
-    this.setBatchLiability(liability);
+    //this.setBatchLiability(liability);
+    this.updateBatchLiability(liability.id!, liability);
     return this.endBatch('create');
   }
 
@@ -153,7 +154,7 @@ export class LiabilityService extends ParentBatchExpensePurchaseService {
     const purchaseId = this.setBatchPurchase(purchase);
     paymentHistory.foreignId = purchaseId;
     liability.paymentHistory!.push(paymentHistory);
-    this.setBatchLiability(liability);
+    this.updateBatchLiability(liability.id!, liability);
     return this.endBatch('create');
   }
 
