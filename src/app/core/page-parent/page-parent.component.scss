@@ -15,8 +15,10 @@
         justify-content: space-between;
 
         h1{
-            font-size: 1.37rem;
+            font-size: 1.5rem;
             font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: white;
         }
     }
 
@@ -30,5 +32,11 @@
     .button-actions{
         display:flex;
         gap:.5rem;
+    }
+
+    ::ng-deep{
+        mat-card:first-of-type{
+            background-color: #90f1ff;
+        }
     }
 }

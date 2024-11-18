@@ -2,9 +2,24 @@
   display: flex;
   height: 100vh;
   flex-direction: column;
+  .custom-toolbar {
+    background-color: #00dfff;
+    color: #ededed;
+    /*     // -webkit-text-stroke-color: #FFFFFF; /* For compatibility with older browsers */
+    // -webkit-text-stroke-width: 2px; */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+    ::ng-deep {
+      mat-icon {
+        color: #ededed;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
 
   mat-sidenav {
     width: 18rem;
+    background-color: #b1f3e6;
 
     mat-nav-list {
       a {
@@ -15,9 +30,14 @@
           display: inline-flex;
           align-items: center;
           gap: 1rem;
-          
+
           font-size: 1.1rem;
           font-weight: 400;
+
+          span {
+            font-size: x-large;
+            color: #2e8d8d;
+          }
         }
       }
     }
