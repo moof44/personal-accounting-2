@@ -28,37 +28,45 @@ export class AuthorizedLayoutComponent implements OnInit {
   fillerNav2: NavigationMenu[] = [
     {
       label: 'Home',
-      link: '/'
+      link: '/',
+      icon: 'home' // Add icon property
     },
     {
       label: 'Income',
-      link: '/income'
+      link: '/income',
+      icon: 'attach_money' 
     },
     {
       label: 'Savings',
-      link: '/savings'
+      link: '/savings',
+      icon: 'savings' 
     },
     {
       label: 'Expense',
-      link: '/expense'
+      link: '/expense',
+      icon: 'money_off' 
     },
     {
       label: 'Liability',
-      link: '/liability'
+      link: '/liability',
+      icon: 'account_balance' 
     },
     {
       label: 'Capital',
-      link: '/capital'
+      link: '/capital',
+      icon: 'business_center' 
     },
     {
       label: 'Purchase',
-      link: '/purchase'
+      link: '/purchase',
+      icon: 'shopping_cart' 
     },
     {
       label: 'About',
-      link: '/about'
+      link: '/about',
+      icon: 'info' 
     },
-  ]
+  ];
 
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');

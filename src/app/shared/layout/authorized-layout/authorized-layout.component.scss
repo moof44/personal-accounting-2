@@ -12,6 +12,10 @@
         margin-bottom: 1rem;
 
         ::ng-deep span {
+          display: inline-flex;
+          align-items: center;
+          gap: 1rem;
+          
           font-size: 1.1rem;
           font-weight: 400;
         }

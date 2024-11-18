@@ -15,7 +15,10 @@
     <mat-icon>control_point</mat-icon>
 </button>
 <mat-menu #menu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item (click)="command1()">Command 1</button>
-  <button mat-menu-item (click)="command2()">Command 2</button>
-  <button mat-menu-item (click)="command3()">Command 3</button>
+  @for (menu of menuList; track $index) {
+    <button mat-menu-item [routerLink]="menu.link">
+      <mat-icon>{{menu.icon}}</mat-icon>
+      {{menu.label}}
+    </button>
+  }
 </mat-menu>

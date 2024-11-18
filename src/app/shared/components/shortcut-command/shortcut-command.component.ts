@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, type OnInit } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'shared-shortcut-command',
@@ -12,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
+    RouterLink,
   ],
   templateUrl: './shortcut-command.component.html',
   styleUrl: './shortcut-command.component.scss',
@@ -19,9 +21,32 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ShortcutCommandComponent implements OnInit {
 
+  showMenu = false;
+  menuList = [
+    {
+      link: '/income/add',
+      label: 'Add Income',
+      icon: 'attach_money'
+    },
+    {
+      link: '/expense/add',
+      label: 'Add Expense',
+      icon: 'money_off'
+    },
+    {
+      link: '/savings/add',
+      label: 'Add Savings',
+      icon: 'savings'
+    },
+    {
+      link: '/liability',
+      label: 'Pay Liability',
+      icon: 'account_balance'
+    },
+  ];
+
   ngOnInit(): void { }
 
-  showMenu = false;
 
   toggleMenu() {
     this.showMenu = !this.showMenu;

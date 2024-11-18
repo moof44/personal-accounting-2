@@ -163,13 +163,17 @@ export class AddUpdateLiabilityComponent implements OnInit {
         foreignId: '',
       }
 
+      let liability = this.formGroup.value as unknown as Partial<Liability>;
+      liability.amount = liability.amount! - result.amount;
+
       switch (result.payFrom) {
         case 'cash':
           this.#liabilityStore.saveExpenseAndLiability(
             foreignData,
-            this.formGroup.value as unknown as Partial<Liability>,
+            liability,
             paymentHistory
           ).subscribe(()=>{
+            this.formGroup.controls.amount.setValue(liability.amount!); // update amount
             this.#notificationService.showNotification(
               'custom',
               'success',
@@ -181,9 +185,10 @@ export class AddUpdateLiabilityComponent implements OnInit {
         case 'capital':
           this.#liabilityStore.savePurchaseAndLiability(
             foreignData,
-            this.formGroup.value as unknown as Partial<Liability>,
+            liability,
             paymentHistory
           ).subscribe(()=>{
+            this.formGroup.controls.amount.setValue(liability.amount!); // update amount
             this.#notificationService.showNotification(
               'custom',
               'success',
