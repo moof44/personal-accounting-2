@@ -1,3 +1,17 @@
+:host{
+    ::ng-deep{
+        table{
+            tbody{
+                background-color: #d3fff8;
+                
+                tr{
+                    color: #696969;
+                }
+            }
+        }
+    }
+}
+
 .income-list-search{
     width:100%;
 
